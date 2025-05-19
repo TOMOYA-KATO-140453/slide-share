@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1600, initial-scale=1.0">
+  <title>Smart R&D 新規テーマ創出：加藤課題設定スライド</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+    body { background: #F4F4F4; font-family: 'Noto Sans JP', sans-serif; }
+    .slide-container {
+      width: 1600px; height: 900px; background: #FFFFFF; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px 48px 32px 48px; margin: 40px auto 0;
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1.5px solid #00A9E0; padding-bottom: 18px; }
+    .header-title {
+      font-size: 36px; font-weight: 700;
+      background: linear-gradient(90deg, #DA1884 0%, #00A9E0 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      letter-spacing: 1px;
+    }
+    .header-date { color: #2D2D2D; font-size: 18px; }
+    .content {
+      display: flex;
+      gap: 40px;
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    }
+    .column {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      justify-content: stretch;
+      min-height: 0;
+    }
+    .card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 28px 24px 20px 24px;
+      border: 2px solid #F4F4F4;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-height: 0;
+      justify-content: flex-start;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-title.common { color: #00A9E0; }
+    .card-title.a { color: #DA1884; }
+    .card-title.h { color: #00B2A9; }
+    .card-title.survey { color: #FF6A13; }
+    .card-title.final { color: #8031A7; }
+    .card-content {
+      font-size: 15px;
+      color: #2D2D2D;
+      line-height: 1.6;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+    }
+    ul { padding-left: 22px; margin-bottom: 8px; }
+    li { margin-bottom: 7px; font-size: 14px; line-height: 1.5; }
+    li > b { font-weight: 700; }
+    .highlight { background: #FFF3E0; color: #FF6A13; padding: 3px 6px; border-radius: 4px; font-weight: 500; font-size: 15px; }
+    .footer { color: #94a3b8; font-size: 13px; margin-top: 18px; }
+    .section-title { font-size: 20px; font-weight: 700; color: #8031A7; margin-bottom: 10px; }
+    .flowchart {
+      background: #F4F4F4;
+      border: 2px solid #00A9E0;
+      border-radius: 8px;
+      padding: 12px 10px 12px 10px;
+      font-size: 14px;
+      color: #00A9E0;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+    .flow-step {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .flow-icon {
+      width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: #00A9E0; color: #fff; font-size: 16px; font-weight: bold;
+    }
+    .flow-arrow {
+      color: #00A9E0; font-size: 20px; margin: 0 6px;
+    }
+    .icon-bullet {
+      display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; vertical-align: middle;
+      text-align: center; font-size: 15px; font-weight: bold;
+    }
+    .icon-cyan { background: #00A9E0; color: #fff; }
+    .icon-magenta { background: #DA1884; color: #fff; }
+    .icon-turquoise { background: #00B2A9; color: #fff; }
+    .icon-orange { background: #FF6A13; color: #fff; }
+    .icon-purple { background: #8031A7; color: #fff; }
+    .icon-yellow { background: #EEDD00; color: #2D2D2D; }
+    .icon-green { background: #78BE20; color: #fff; }
+    .icon-gray { background: #2D2D2D; color: #fff; }
+    .icon-lightgray { background: #F4F4F4; color: #2D2D2D; border: 1px solid #DA1884; }
+    ol { padding-left: 22px; }
+    @media (max-width: 1700px) {
+      .slide-container { width: 98vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Slide 1: 全体フローとA/Hチーム課題 -->
+  <div class="slide-container" id="slide-1">
+    <div class="header">
+      <div class="header-title">新規テーマ創出：課題決定フローとチーム課題</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-1"></span>
+        <button class="svg-download-btn" data-slide="slide-1" style="background: none; border: none; padding: 0; cursor: pointer;">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" fill="#F4F4F4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#00A9E0" stroke-width="2"/>
+            <g>
+              <path d="M22 13v13" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M17 22l5 5 5-5" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column">
+        <div class="card">
+          <div class="card-title common"><span class="icon-cyan icon-bullet">🗺️</span>課題決定までの流れ</div>
+          <div class="card-content">
+            <div class="flowchart" style="align-items: flex-start;">
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">1</span>
+                <span>各メンバー課題リストアップ</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">2</span>
+                <span>Aチーム課題抽出・共有</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">3</span>
+                <span>加藤による3課題設定</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">4</span>
+                <span>Hチームでシャッフル・議論</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">5</span>
+                <span>共通/特有課題整理</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">6</span>
+                <span>アンケート結果フィードバック</span>
+              </div>
+              <div class="flow-arrow" style="margin-left:36px;">↓</div>
+              <div class="flow-step" style="min-width:220px;">
+                <span class="flow-icon">7</span>
+                <span>共通項抽出→最終課題設定</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title common"><span class="icon-cyan icon-bullet">🔗</span>A/Hチーム共通課題</div>
+          <div class="card-content">
+            <ul>
+              <li>
+                <span class="icon-cyan icon-bullet">📂</span>
+                <b>データ・ノウハウの散在・質のバラツキ</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：必要なデータがPEAS、BOX、NASなど複数箇所に保存されていて探すのに時間がかかる</li>
+                  <li style="color:#666;font-size:13px;">例：過去の装置トラブル対応履歴が各GrのExcelやメールにしか残っておらず、担当者が異動すると情報が消える</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-magenta icon-bullet">👨‍🏫</span>
+                <b>技術伝承・教育不足・属人化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：アラーム発生時、知見者に個別に問い合わせるしかなく、同じ問い合わせが何度も発生</li>
+                  <li style="color:#666;font-size:13px;">例：教育コンテンツや履歴の未整備、若手のローテーション時に引継ぎ工数が膨大</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-orange icon-bullet">🛠️</span>
+                <b>システム・ツールの使い勝手や統合</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：複数ツールの乱立、どれが便利か分からない、情報アクセスが非効率</li>
+                  <li style="color:#666;font-size:13px;">例：自動測長やレシピ作成ツールなどが多様化し、使いこなせていない</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-green icon-bullet">🤖</span>
+                <b>生成AI等の新技術活用</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：ChatGPT以外のAIが使えない、現場でのAI活用が進まない</li>
+                  <li style="color:#666;font-size:13px;">例：ノーコード/ローコードAIツールを現場で活用できず、非エンジニアの業務効率化が進まない</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-yellow icon-bullet">🔄</span>
+                <b>業務プロセスの非効率・見直し</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：無駄な会議や承認、資料作成が多い</li>
+                  <li style="color:#666;font-size:13px;">例：設計以外の業務が多く本来業務に集中できない</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-title a"><span class="icon-magenta icon-bullet">🅰️</span>Aチーム特有課題</div>
+          <div class="card-content">
+            <ul>
+              <li>
+                <span class="icon-magenta icon-bullet">🏗️</span>
+                設計・開発プロセスの負担、組織運営
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：設計者の負担増大、進捗管理や顧客対応の工数増</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-magenta icon-bullet">🔒</span>
+                情報管理のサイロ化・意思決定の遅延
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：各部門が個別に情報を管理しているため、データの断片化が発生</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-magenta icon-bullet">🌐</span>
+                他業界との情報交換・技術交流
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：他業界の開発プロセスを知らない人が多い</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title h"><span class="icon-turquoise icon-bullet">🅷</span><b>Hチーム特有課題</b></div>
+          <div class="card-content">
+            <ul>
+              <li>
+                <span class="icon-turquoise icon-bullet">⚙️</span>
+                <b>システム自動化・API化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：装置データが自動で取得できず、手作業や外部RPAツールで対応している</li>
+                  <li style="color:#666;font-size:13px;">例：社内システムのAPIがなく、データ取得の自動化が困難</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-turquoise icon-bullet">🏭</span>
+                <b>現場環境・設備の最適化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：計測器（SEM等）が不足し、予約が埋まり業務遅滞</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-turquoise icon-bullet">📦</span>
+                <b>MASTER BOMやパーツ管理のシステム化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：ExcelでMASTER BOMを管理しているため、編集競合や事故が発生しやすい</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-turquoise icon-bullet">👁️</span>
+                <b>情報の可視化・利用状況の把握</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：どのチームがどんな目的で社内機を使っているか分かりにくい</li>
+                  <li style="color:#666;font-size:13px;">例：どの機能が使われているか分からず、せっかく開発した機能が使われていない</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Smart R&D | © 2024</div>
+  </div>
+
+  <!-- Slide 2: アンケート結果 -->
+  <div class="slide-container" id="slide-2">
+    <div class="header">
+      <div class="header-title">アンケート結果サマリ</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-2"></span>
+        <button class="svg-download-btn" data-slide="slide-2" style="background: none; border: none; padding: 0; cursor: pointer;">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" fill="#F4F4F4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#00A9E0" stroke-width="2"/>
+            <g>
+              <path d="M22 13v13" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M17 22l5 5 5-5" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column">
+        <div class="card">
+          <div class="card-title survey"><span class="icon-orange icon-bullet">📊</span><b>業務効率向上意見</b></div>
+          <div class="card-content">
+            <ul>
+              <li><span class="icon-orange icon-bullet">🛠️</span><b>システム・ツールの統一・自動化・IT化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：Excelやマクロによる業務の自動化、Webサービスや専用システムの導入、複数システム・ツールの統合</li>
+                </ul>
+              </li>
+              <li><span class="icon-yellow icon-bullet">📖</span><b>マニュアル・手順書・ルールの整備</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：明確でシンプルな手順書の作成、属人化の排除、マニュアルやノウハウの一元管理</li>
+                </ul>
+              </li>
+              <li><span class="icon-cyan icon-bullet">🔗</span><b>情報共有・ナレッジの蓄積</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：部署横断的な情報共有、ナレッジベースの構築、過去資料や設計情報の素早い把握</li>
+                </ul>
+              </li>
+              <li><span class="icon-green icon-bullet">🎓</span><b>教育・サポート体制の強化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：プログラム学習支援、データ解析ツール作成のサポート、ITツールやAI活用の教育</li>
+                </ul>
+              </li>
+              <li><span class="icon-purple icon-bullet">👥</span><b>組織・業務分担の最適化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：適材適所の業務分担、専門部署の設置、横串体制の強化</li>
+                </ul>
+              </li>
+              <li><span class="icon-magenta icon-bullet">✅</span><b>意思決定・業務フローの明確化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：上司による優先順位付けや意思決定の迅速化、不要な業務やルールの見直し</li>
+                </ul>
+              </li>
+            </ul>
+            <span class="highlight">最も多かった項目：システム・ツールの統一・自動化・IT化</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-title survey"><span class="icon-orange icon-bullet">📝</span><b>各部署からの課題抽出</b></div>
+          <div class="card-content">
+            <ul>
+              <li><span class="icon-cyan icon-bullet">📂</span><b>データ管理・活用</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：データが散在しており、どこに何があるか分からない（CPP）、Excel手入力で非効率（TSMD）、データ一元管理ができていない（SDD2, QA）</li>
+                </ul>
+              </li>
+              <li><span class="icon-orange icon-bullet">🛠️</span><b>ツール・システムの使い勝手・自動化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：既存ツールが使い辛い（TSMD, QA）、ExcelやPowerPointでの管理が非効率（ADD, DE3, SDD1）、システム化・自動化の必要性（AFD, DE3）</li>
+                </ul>
+              </li>
+              <li><span class="icon-cyan icon-bullet">🔗</span><b>情報共有・連携</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：部門間での情報共有ができていない（PDC, APLA）、設計部門との連携が薄い（5i PRO）、情報共有の仕組みが不十分（APRO）</li>
+                </ul>
+              </li>
+              <li><span class="icon-green icon-bullet">👨‍🏫</span><b>人材・技術伝承・育成</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：技術伝承が進んでいない（ADD, DE2, DE3）、人材育成が課題（APLA, SFT）、エンジニアの能力がパラメータ化されていない（SDD1）</li>
+                </ul>
+              </li>
+              <li><span class="icon-yellow icon-bullet">💰</span><b>コスト・予算管理</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：コストダウンの必要性（CPP）、予算管理の工数が大きい（DE3, DPM）、コストテーブルの整備が必要（DE1）</li>
+                </ul>
+              </li>
+              <li><span class="icon-purple icon-bullet">🔒</span><b>セキュリティ・情報統制</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：情報セキュリティの厳格化（CED, MFG3）、顧客データの取得が困難（SDD1, DE2）</li>
+                </ul>
+              </li>
+            </ul>
+            <span class="highlight">最も多かった項目：データ管理・活用、ツール・システムの使い勝手・自動化</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Smart R&D | © 2024</div>
+  </div>
+
+  <!-- Slide 3: 共通項と最終課題 -->
+  <div class="slide-container" id="slide-3">
+    <div class="header">
+      <div class="header-title">共通項と最終課題設定</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-3"></span>
+        <button class="svg-download-btn" data-slide="slide-3" style="background: none; border: none; padding: 0; cursor: pointer;">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" fill="#F4F4F4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#00A9E0" stroke-width="2"/>
+            <g>
+              <path d="M22 13v13" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M17 22l5 5 5-5" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column">
+        <div class="card">
+          <div class="card-title final"><span class="icon-purple icon-bullet">🔎</span>アンケート・議論の共通項</div>
+          <div class="card-content">
+            <ul>
+              <li>
+                <span class="icon-cyan icon-bullet">📂</span>
+                <b>データ・ノウハウの一元管理・標準化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：データが複数システムやExcelに分散し、必要な情報がすぐに見つからない</li>
+                  <li style="color:#666;font-size:13px;">例：ノウハウが個人や部門ごとに管理されており、全社的な共有・標準化が進んでいない</li>
+                  <li style="color:#666;font-size:13px;">例：BKMやナレッジの統合DB化、検索性・アクセス性の向上が必要</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-orange icon-bullet">🛠️</span>
+                <b>システム・ツールの統一・自動化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：Excelやマクロによる手作業が多く、Web・専用システムへの移行やAPI化が求められている</li>
+                  <li style="color:#666;font-size:13px;">例：複数ツールの乱立による非効率、ツールの一本化・自動化による業務効率化</li>
+                  <li style="color:#666;font-size:13px;">例：AIやノーコード/ローコードツールの活用による自動化推進</li>
+                </ul>
+              </li>
+              <li>
+                <span class="icon-green icon-bullet">👨‍🏫</span>
+                <b>技術伝承・教育・ナレッジ共有の仕組み化</b>
+                <ul>
+                  <li style="color:#666;font-size:13px;">例：知見者への個別問い合わせが多く、教育コンテンツや履歴の未整備が課題</li>
+                  <li style="color:#666;font-size:13px;">例：マニュアル・手順書の一元管理、ナレッジベース構築、OJT/研修の仕組み化が必要</li>
+                  <li style="color:#666;font-size:13px;">例：属人化排除、誰でも同じ成果が出せる仕組みづくり</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-title final"><span class="icon-purple icon-bullet">🎯</span>最終的な課題設定</div>
+          <div class="card-content">
+            <ol>
+              <li><span class="icon-cyan icon-bullet">📂</span>データ・ノウハウの一元管理と質の標準化</li>
+              <li><span class="icon-orange icon-bullet">🛠️</span>システム・ツールの統一・自動化（生成AI等の新技術活用含む）</li>
+              <li><span class="icon-green icon-bullet">👨‍🏫</span>技術伝承・教育・ナレッジ共有の仕組み化</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Smart R&D | © 2024</div>
+  </div>
+
+  <script>
+    // 各スライドの日付表示
+    function setDate(id) {
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = today.getMonth() + 1;
+      var d = today.getDate();
+      document.getElementById(id).textContent = y + '/' + String(m).padStart(2, '0') + '/' + String(d).padStart(2, '0');
+    }
+    setDate('header-date-1');
+    setDate('header-date-2');
+    setDate('header-date-3');
+
+    // SVGダウンロード機能
+    document.querySelectorAll('.svg-download-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var slideId = btn.getAttribute('data-slide');
+        var container = document.getElementById(slideId);
+        var width = container.offsetWidth, height = container.offsetHeight;
+        // SVG開始
+        var svgString = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n` +
+          `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
+          `<rect width="${width}" height="${height}" fill="#F4F4F4" />`;
+
+        // ヘッダー
+        var headerTitle = container.querySelector('.header-title').textContent;
+        var date = container.querySelector('.header-date').textContent;
+        svgString += `<rect x="32" y="32" width="${width-64}" height="60" fill="#fff" stroke="#00A9E0" stroke-width="1" />`;
+        svgString += `<text x="50" y="70" font-family="Arial" font-size="32" font-weight="bold" fill="#DA1884">${headerTitle}</text>`;
+        svgString += `<text x="${width-250}" y="70" font-family="Arial" font-size="16" fill="#2D2D2D">${date}</text>`;
+
+        // カード描画（左カラム: 上から下へ、右カラム: 上から下へ）
+        var columns = container.querySelectorAll('.column');
+        var cardBoxW = (width-64-40)/2, cardBoxH = (height-112-32-32)/2;
+        var cardPadX = 32, cardPadY = 112, cardGap = 32;
+        // 左カラム
+        var leftCards = columns[0].querySelectorAll('.card');
+        for (var i = 0; i < leftCards.length; i++) {
+          var card = leftCards[i];
+          var y = cardPadY + i * (cardBoxH + cardGap);
+          svgString += `<rect x="${cardPadX}" y="${y}" width="${cardBoxW}" height="${cardBoxH}" rx="12" ry="12" fill="#fff" stroke="#F4F4F4" stroke-width="2"/>`;
+          var title = card.querySelector('.card-title').textContent;
+          svgString += `<text x="${cardPadX+16}" y="${y+36}" font-family="Arial" font-size="18" font-weight="bold" fill="#00A9E0">${title}</text>`;
+          var content = card.querySelector('.card-content');
+          var lines = [];
+          // リスト優先
+          var uls = content.querySelectorAll('ul');
+          if (uls.length > 0) {
+            uls.forEach(function(ul){
+              ul.querySelectorAll(':scope > li').forEach(function(li){
+                var txt = li.childNodes[1] ? li.childNodes[1].textContent.trim() : li.textContent.trim();
+                lines.push('・' + txt);
+                // サブリスト
+                var subul = li.querySelector('ul');
+                if(subul){
+                  subul.querySelectorAll('li').forEach(function(subli){
+                    lines.push('　- ' + subli.textContent.trim());
+                  });
+                }
+              });
+            });
+          } else {
+            lines = [content.textContent.trim()];
+          }
+          for (var j = 0; j < lines.length && j < 8; j++) {
+            svgString += `<text x="${cardPadX+24}" y="${y+60+j*22}" font-family="Arial" font-size="13" fill="#2D2D2D">${lines[j]}</text>`;
+          }
+        }
+        // 右カラム
+        var rightCards = columns[1].querySelectorAll('.card');
+        for (var i = 0; i < rightCards.length; i++) {
+          var card = rightCards[i];
+          var y = cardPadY + i * (cardBoxH + cardGap);
+          var x = cardPadX + cardBoxW + 40;
+          svgString += `<rect x="${x}" y="${y}" width="${cardBoxW}" height="${cardBoxH}" rx="12" ry="12" fill="#fff" stroke="#F4F4F4" stroke-width="2"/>`;
+          var title = card.querySelector('.card-title').textContent;
+          svgString += `<text x="${x+16}" y="${y+36}" font-family="Arial" font-size="18" font-weight="bold" fill="#00A9E0">${title}</text>`;
+          var content = card.querySelector('.card-content');
+          var lines = [];
+          var uls = content.querySelectorAll('ul');
+          if (uls.length > 0) {
+            uls.forEach(function(ul){
+              ul.querySelectorAll(':scope > li').forEach(function(li){
+                var txt = li.childNodes[1] ? li.childNodes[1].textContent.trim() : li.textContent.trim();
+                lines.push('・' + txt);
+                var subul = li.querySelector('ul');
+                if(subul){
+                  subul.querySelectorAll('li').forEach(function(subli){
+                    lines.push('　- ' + subli.textContent.trim());
+                  });
+                }
+              });
+            });
+          } else {
+            lines = [content.textContent.trim()];
+          }
+          for (var j = 0; j < lines.length && j < 8; j++) {
+            svgString += `<text x="${x+24}" y="${y+60+j*22}" font-family="Arial" font-size="13" fill="#2D2D2D">${lines[j]}</text>`;
+          }
+        }
+        // フッター
+        svgString += `<text x="32" y="${height-16}" font-family="Arial" font-size="12" fill="#94a3b8">Smart R&D | © 2024</text>`;
+        svgString += `</svg>`;
+
+        var blob = new Blob([svgString], {type: 'image/svg+xml'});
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.download = slideId + '.svg';
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+    });
+  </script>
+</body>
+</html>
