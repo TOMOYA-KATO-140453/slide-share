@@ -1,0 +1,501 @@
+<!DOCTYPE html><html><head>
+      <title>加藤と課題設定(最終)</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+      
+      
+      <script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script>
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="smart-rd-新規テーマ創出加藤課題設定レポート最終版">Smart R&amp;D 新規テーマ創出：加藤課題設定レポート（最終版） </h1>
+<hr>
+<h2 id="図解3つの課題決定までの流れ">【図解】3つの課題決定までの流れ </h2>
+<div class="mermaid">flowchart TD
+    A[各メンバーによる&lt;br&gt;課題リストアップ] --&gt; B[Aチーム課題の抽出&lt;br&gt;・具体例共有]
+    B --&gt; C[加藤による3つの&lt;br&gt;課題設定（Aチーム内）]
+    C --&gt; D[Hチームでのシャッフル&lt;br&gt;・議論・具体例共有]
+    D --&gt; E[A/Hチーム共通課題・特有&lt;br&gt;の整理]
+    E --&gt; F[アンケート結果&lt;br&gt;フィードバック&lt;br&gt;（業務効率向上意見・&lt;br&gt;各部署課題抽出）]
+    F --&gt; G[アンケート・議論&lt;br&gt;の共通項抽出]
+    G --&gt; H[最終的な3つの課題設定]
+</div><hr>
+<h2 id="1-これまでの流れ">1. これまでの流れ </h2>
+<h3 id="aチーム課題の要点">Aチーム課題の要点 </h3>
+<ul>
+<li><strong>データ・ノウハウの散在、質のバラツキ</strong>
+<ul>
+<li>例：「必要なデータがPEAS、BOX、NASなど複数箇所に保存されていて探すのに時間がかかる」</li>
+<li>例：「過去の装置トラブル対応履歴が各GrのExcelやメールにしか残っておらず、担当者が異動すると情報が消える」</li>
+</ul>
+</li>
+<li><strong>技術伝承・教育不足、属人化</strong>
+<ul>
+<li>例：「アラーム発生時、知見者に個別に問い合わせるしかなく、同じ問い合わせが何度も発生」</li>
+<li>例：「教育コンテンツや履歴の未整備、若手のローテーション時に引継ぎ工数が膨大」</li>
+</ul>
+</li>
+<li><strong>システム・ツールの使い勝手や統合</strong>
+<ul>
+<li>例：「複数ツールの乱立、どれが便利か分からない、情報アクセスが非効率」</li>
+<li>例：「自動測長やレシピ作成ツールなどが多様化し、使いこなせていない」</li>
+</ul>
+</li>
+<li><strong>生成AI等の新技術活用</strong>
+<ul>
+<li>例：「ChatGPT以外のAIが使えない、現場でのAI活用が進まない」</li>
+<li>例：「ノーコード/ローコードAIツールを現場で活用できず、非エンジニアの業務効率化が進まない」</li>
+</ul>
+</li>
+<li><strong>業務プロセスの非効率・見直し</strong>
+<ul>
+<li>例：「無駄な会議や承認、資料作成が多い」</li>
+<li>例：「設計以外の業務が多く本来業務に集中できない」</li>
+</ul>
+</li>
+</ul>
+<h3 id="加藤による3つの課題設定aチーム内">加藤による3つの課題設定（Aチーム内） </h3>
+<ol>
+<li><strong>さまざまな生成AIの言語モデルを使用できるようにすべき</strong>
+<ul>
+<li>例：「ChatGPT-4o以外のAIモデルやSaaS型生成AIサービス（Google Gemini, Claude, Bolt等）が使えない」</li>
+</ul>
+</li>
+<li><strong>データが散在、かつ、質のバラツキが大きい</strong>
+<ul>
+<li>例：「前任者に聞かないと分からないノウハウ」「データのフォーマットがバラバラ」</li>
+</ul>
+</li>
+<li><strong>技術伝承、教育がされないため、アラーム発生時の初動対応ができない</strong>
+<ul>
+<li>例：「知見者が属人化しやすく、同じ問い合わせが何度も発生」「対応履歴が共有されていない」</li>
+</ul>
+</li>
+</ol>
+<h3 id="hチームでのシャッフル議論">Hチームでのシャッフル・議論 </h3>
+<h4 id="hチーム課題の要点">Hチーム課題の要点 </h4>
+<ul>
+<li><strong>データ・ノウハウの散在、質のバラツキ</strong>
+<ul>
+<li>例：「実験データやパーツ管理が複数システムやExcelに分散」</li>
+</ul>
+</li>
+<li><strong>技術伝承・教育不足、属人化</strong>
+<ul>
+<li>例：「若手ローテーション時の引継ぎ工数が多い」「知見・技術の伝承不足」</li>
+</ul>
+</li>
+<li><strong>システム・ツールの使い勝手や統合</strong>
+<ul>
+<li>例：「自動測長やレシピ作成ツールなどが多様化し、どれが便利か分からない」</li>
+</ul>
+</li>
+<li><strong>生成AI等の新技術活用</strong>
+<ul>
+<li>例：「ChatGPT以外のAIが使えない」「ノーコード/ローコードAIツールを現場で活用できず、非エンジニアの業務効率化が進まない」</li>
+</ul>
+</li>
+<li><strong>システム自動化・API化</strong>
+<ul>
+<li>例：「装置データが自動で取得できず、手作業や外部RPAツールで対応している」</li>
+</ul>
+</li>
+<li><strong>現場環境・設備の最適化</strong>
+<ul>
+<li>例：「計測器（SEM等）が不足し、予約が埋まり業務遅滞」</li>
+</ul>
+</li>
+<li><strong>MASTER BOMやパーツ管理のシステム化</strong>
+<ul>
+<li>例：「ExcelでMASTER BOMを管理しているため、編集競合や事故が発生しやすい」</li>
+</ul>
+</li>
+<li><strong>情報の可視化・利用状況の把握</strong>
+<ul>
+<li>例：「どのチームがどんな目的で社内機を使っているか分かりにくい」</li>
+</ul>
+</li>
+<li><strong>パーツ開発・部品の内製化・共通化</strong>
+<ul>
+<li>例：「改造や不具合時の対応を早くしたい、内製化で発注までの手間や納期短縮を目指す」「内製化によりパーツレビューの頻度が上がり図面の完成度が上がる」</li>
+</ul>
+</li>
+</ul>
+<h4 id="具体例">具体例 </h4>
+<ul>
+<li>「装置のデータが自動で取得できず、手作業でダウンロードしている」</li>
+<li>「ExcelでMASTER BOMを管理しているため、誰かが編集していると編集できない・事故が発生」</li>
+<li>「計測器が不足し、予約が埋まり現場がギスギスしている」</li>
+</ul>
+<h3 id="ahチーム共通課題">A/Hチーム共通課題 </h3>
+<ul>
+<li><strong>データ・ノウハウの散在・質のバラツキ</strong>
+<ul>
+<li>例：「必要なデータがすぐに入手できない」「データが複数システムやExcelに分散」</li>
+</ul>
+</li>
+<li><strong>技術伝承・教育不足・属人化</strong>
+<ul>
+<li>例：「知見者に都度問い合わせ、同じ問い合わせが繰り返される」「教育コンテンツや履歴の未整備」</li>
+</ul>
+</li>
+<li><strong>システム・ツールの使い勝手や統合</strong>
+<ul>
+<li>例：「複数ツールの乱立、どれが便利か分からない」</li>
+</ul>
+</li>
+<li><strong>生成AI等の新技術活用</strong>
+<ul>
+<li>例：「現場でのAI活用が進まない」「ノーコード/ローコードAIツールが使えない」</li>
+</ul>
+</li>
+<li><strong>業務プロセスの非効率・見直し</strong>
+<ul>
+<li>例：「無駄な会議や承認が多い」「本業以外の業務が多い」</li>
+</ul>
+</li>
+</ul>
+<h3 id="ahチーム特有課題">A/Hチーム特有課題 </h3>
+<ul>
+<li><strong>Aチーム特有</strong>
+<ul>
+<li>設計・開発プロセスの負担、組織運営
+<ul>
+<li>例：「設計者の負担増大、進捗管理や顧客対応の工数増」</li>
+</ul>
+</li>
+<li>情報管理のサイロ化・意思決定の遅延
+<ul>
+<li>例：「各部門が個別に情報を管理しているため、データの断片化が発生」</li>
+</ul>
+</li>
+<li>他業界との情報交換・技術交流
+<ul>
+<li>例：「他業界の開発プロセスを知らない人が多い」</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Hチーム特有</strong>
+<ul>
+<li>システム自動化・API化
+<ul>
+<li>例：「社内システムのAPIがなく、データ取得の自動化が困難」</li>
+</ul>
+</li>
+<li>現場環境・設備の最適化
+<ul>
+<li>例：「計測器が不足し、予約が埋まり業務遅滞」</li>
+</ul>
+</li>
+<li>MASTER BOMやパーツ管理のシステム化
+<ul>
+<li>例：「ExcelでMASTER BOMを管理しているため、編集競合や事故が発生」</li>
+</ul>
+</li>
+<li>情報の可視化・利用状況の把握
+<ul>
+<li>例：「どの機能が使われているか分からず、せっかく開発した機能が使われていない」</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-アンケート結果業務効率向上意見各部署からの課題抽出のフィードバック">2. アンケート結果（業務効率向上意見・各部署からの課題抽出）のフィードバック </h2>
+<h3 id="アンケート結果サマリ">アンケート結果サマリ </h3>
+<ul>
+<li>
+<p><strong>業務効率向上意見アンケート</strong>では、「システム・ツールの統一・自動化・IT化」が最も多く挙げられ、次いで「マニュアル・手順書・ルールの整備」「情報共有・ナレッジの蓄積」「教育・サポート体制の強化」などが続きました。現場ではExcelやマクロによる手作業の多さ、複数システムの乱立、業務フローの煩雑さが大きな課題となっています。</p>
+</li>
+<li>
+<p><strong>各部署からの課題抽出アンケート</strong>でも、「データ管理・活用」「ツール・システムの使い勝手・自動化」が最も多く、情報共有・連携や技術伝承・人材育成も多く挙げられました。データの散在やExcel手入力の非効率、既存ツールの使いづらさ、システム化・自動化の必要性が現場の共通課題です。</p>
+</li>
+</ul>
+<hr>
+<h3 id="21-業務効率向上意見アンケートの集計結果">2.1 業務効率向上意見アンケートの集計結果 </h3>
+<ul>
+<li><strong>システム・ツールの統一・自動化・IT化</strong>
+<ul>
+<li>例：「Excelやマクロによる業務の自動化」「Webサービスや専用システムの導入」「複数システム・ツールの統合」</li>
+</ul>
+</li>
+<li><strong>マニュアル・手順書・ルールの整備と見える化</strong>
+<ul>
+<li>例：「明確でシンプルな手順書の作成」「属人化の排除」「マニュアルやノウハウの一元管理」</li>
+</ul>
+</li>
+<li><strong>情報共有・ナレッジの蓄積と活用</strong>
+<ul>
+<li>例：「部署横断的な情報共有」「ナレッジベースの構築」「過去資料や設計情報の素早い把握」</li>
+</ul>
+</li>
+<li><strong>教育・サポート体制の強化</strong>
+<ul>
+<li>例：「プログラム学習支援」「データ解析ツール作成のサポート」「ITツールやAI活用の教育」</li>
+</ul>
+</li>
+<li><strong>組織・業務分担の最適化</strong>
+<ul>
+<li>例：「適材適所の業務分担」「専門部署の設置」「横串体制の強化」</li>
+</ul>
+</li>
+<li><strong>意思決定・業務フローの明確化</strong>
+<ul>
+<li>例：「上司による優先順位付けや意思決定の迅速化」「不要な業務やルールの見直し」</li>
+</ul>
+</li>
+</ul>
+<p><strong>最も多かった項目:</strong><br>
+「システム・ツールの統一・自動化・IT化」に関する要望が最も多く挙げられました。<br>
+特に「Excelやマクロによる業務の自動化」「Webサービスや専用システムの導入」「複数システムの統合」など、現状の煩雑な業務フローや手作業を減らし、効率化・標準化を図りたいという声が多数ありました。</p>
+<hr>
+<h3 id="22-各部署からの課題抽出アンケートの集計結果">2.2 各部署からの課題抽出アンケートの集計結果 </h3>
+<ul>
+<li><strong>データ管理・活用</strong>
+<ul>
+<li>例：「データが散在しており、どこに何があるか分からない（CPP）」「Excel手入力で非効率（TSMD）」「データ一元管理ができていない（SDD2, QA）**</li>
+</ul>
+</li>
+<li><strong>ツール・システムの使い勝手・自動化</strong>
+<ul>
+<li>例：「既存ツールが使い辛い（TSMD, QA）」「ExcelやPowerPointでの管理が非効率（ADD, DE3, SDD1）」「システム化・自動化の必要性（AFD, DE3）**</li>
+</ul>
+</li>
+<li><strong>情報共有・連携</strong>
+<ul>
+<li>例：「部門間での情報共有ができていない（PDC, APLA）」「設計部門との連携が薄い（5i PRO）」「情報共有の仕組みが不十分（APRO）**</li>
+</ul>
+</li>
+<li><strong>人材・技術伝承・育成</strong>
+<ul>
+<li>例：「技術伝承が進んでいない（ADD, DE2, DE3）」「人材育成が課題（APLA, SFT）」「エンジニアの能力がパラメータ化されていない（SDD1）**</li>
+</ul>
+</li>
+<li><strong>コスト・予算管理</strong>
+<ul>
+<li>例：「コストダウンの必要性（CPP）」「予算管理の工数が大きい（DE3, DPM）」「コストテーブルの整備が必要（DE1）**</li>
+</ul>
+</li>
+<li><strong>セキュリティ・情報統制</strong>
+<ul>
+<li>例：「情報セキュリティの厳格化（CED, MFG3）」「顧客データの取得が困難（SDD1, DE2）**</li>
+</ul>
+</li>
+</ul>
+<p><strong>最も多かった項目:</strong><br>
+「データ管理・活用」および「ツール・システムの使い勝手・自動化」に関する課題が最も多く挙げられました。<br>
+多くの部署で「データが散在している」「Excelや既存ツールでの管理が非効率」「システム化・自動化が必要」といった声が目立ちます。</p>
+<hr>
+<h2 id="3-アンケート結果とahの議論結果の共通項は何か">3. アンケート結果とA/Hの議論結果の共通項は何か？ </h2>
+<ul>
+<li><strong>データ・ノウハウの一元管理・標準化</strong>
+<ul>
+<li>散在・分断されたデータやノウハウを全社横断で一元管理・標準化する必要性</li>
+</ul>
+</li>
+<li><strong>システム・ツールの統一・自動化</strong>
+<ul>
+<li>Excelやマクロ、複数ツールの乱立から脱却し、業務フローの自動化・標準化・効率化</li>
+</ul>
+</li>
+<li><strong>技術伝承・教育・ナレッジ共有の仕組み化</strong>
+<ul>
+<li>属人化排除、教育・マニュアル・ナレッジの整備と共有、誰でも同じ成果が出せる仕組み</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-最終的な課題設定アンケート結果とahの議論結果の共通項を元に設定">4. 最終的な課題設定（アンケート結果とA/Hの議論結果の共通項を元に設定） </h2>
+<ol>
+<li><strong>データ・ノウハウの一元管理と質の標準化</strong>
+<ul>
+<li>例：「Excelや個人管理からの脱却」「BKMやナレッジの統合DB化」「検索性・アクセス性の向上」</li>
+</ul>
+</li>
+<li><strong>システム・ツールの統一・自動化（生成AI等の新技術活用を含む）</strong>
+<ul>
+<li>例：「Excel/マクロからWeb・専用システムへの移行」「API化」「AI活用による自動化」「ツールの一本化」</li>
+</ul>
+</li>
+<li><strong>技術伝承・教育・ナレッジ共有の仕組み化</strong>
+<ul>
+<li>例：「マニュアル・手順書の一元管理」「ナレッジベース構築」「教育コンテンツ整備」「OJT/研修の仕組み化」</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p>この3つの課題は、A/Hチームの議論とアンケート結果の両方で最も多く挙げられたものであり、現場の困りごと・全体最適の観点からも最重要と判断します。</p>
+
+      </div>
+      <div class="md-sidebar-toc">
+<div class="md-toc">
+<details style="padding:0;;padding-left:0px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#smart-rd-新規テーマ創出加藤課題設定レポート最終版" class="md-toc-link"><p>Smart R&amp;D 新規テーマ創出：加藤課題設定レポート（最終版）</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#図解3つの課題決定までの流れ" class="md-toc-link">
+            <p>【図解】3つの課題決定までの流れ</p>
+
+          </a></div><details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#1-これまでの流れ" class="md-toc-link"><ol>
+<li>これまでの流れ</li>
+</ol>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#aチーム課題の要点" class="md-toc-link">
+            <p>Aチーム課題の要点</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#加藤による3つの課題設定aチーム内" class="md-toc-link">
+            <p>加藤による3つの課題設定（Aチーム内）</p>
+
+          </a></div><details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#hチームでのシャッフル議論" class="md-toc-link"><p>Hチームでのシャッフル・議論</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#hチーム課題の要点" class="md-toc-link">
+            <p>Hチーム課題の要点</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#具体例" class="md-toc-link">
+            <p>具体例</p>
+
+          </a></div>
+        </div>
+      </details>
+    <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#ahチーム共通課題" class="md-toc-link">
+            <p>A/Hチーム共通課題</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#ahチーム特有課題" class="md-toc-link">
+            <p>A/Hチーム特有課題</p>
+
+          </a></div>
+        </div>
+      </details>
+    <details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#2-アンケート結果業務効率向上意見各部署からの課題抽出のフィードバック" class="md-toc-link"><ol start="2">
+<li>アンケート結果（業務効率向上意見・各部署からの課題抽出）のフィードバック</li>
+</ol>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#アンケート結果サマリ" class="md-toc-link">
+            <p>アンケート結果サマリ</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#21-業務効率向上意見アンケートの集計結果" class="md-toc-link">
+            <p>2.1 業務効率向上意見アンケートの集計結果</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#22-各部署からの課題抽出アンケートの集計結果" class="md-toc-link">
+            <p>2.2 各部署からの課題抽出アンケートの集計結果</p>
+
+          </a></div>
+        </div>
+      </details>
+    <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#3-アンケート結果とahの議論結果の共通項は何か" class="md-toc-link">
+            <ol start="3">
+<li>アンケート結果とA/Hの議論結果の共通項は何か？</li>
+</ol>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#4-最終的な課題設定アンケート結果とahの議論結果の共通項を元に設定" class="md-toc-link">
+            <ol start="4">
+<li>最終的な課題設定（アンケート結果とA/Hの議論結果の共通項を元に設定）</li>
+</ol>
+
+          </a></div>
+        </div>
+      </details>
+    
+</div>
+</div>
+      <a id="sidebar-toc-btn">≡</a>
+    
+    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+}
+</script>
+    
+    
+    
+<script>
+
+var sidebarTOCBtn = document.getElementById('sidebar-toc-btn')
+sidebarTOCBtn.addEventListener('click', function(event) {
+  event.stopPropagation()
+  if (document.body.hasAttribute('html-show-sidebar-toc')) {
+    document.body.removeAttribute('html-show-sidebar-toc')
+  } else {
+    document.body.setAttribute('html-show-sidebar-toc', true)
+  }
+})
+</script>
+      
+  
+    </body></html>
