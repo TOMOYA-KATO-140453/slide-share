@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1600, initial-scale=1.0">
+  <title>業革会議_議事録250519</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+    body { background: #F4F4F4; font-family: 'Noto Sans JP', sans-serif; }
+    .slide-container {
+      width: 1600px; height: 900px; background: #FFFFFF; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px 48px 32px 48px; margin: 40px auto 0;
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1.5px solid #00A9E0; padding-bottom: 18px; }
+    .header-title {
+      font-size: 36px; font-weight: 700;
+      background: linear-gradient(90deg, #DA1884 0%, #00A9E0 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      letter-spacing: 1px;
+    }
+    .header-date { color: #2D2D2D; font-size: 18px; }
+    .content {
+      display: flex;
+      gap: 40px;
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      justify-content: stretch;
+      min-height: 0;
+      flex: 1 1 0;
+    }
+    .row {
+      display: flex;
+      flex-direction: row;
+      gap: 24px;
+      min-height: 0;
+    }
+    .card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 28px 24px 20px 24px;
+      border: 2px solid #F4F4F4;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-height: 0;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-cyan, .icon-magenta, .icon-turquoise, .icon-orange, .icon-green {
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .icon-cyan { background: #00A9E0; color: #fff; }
+    .icon-magenta { background: #DA1884; color: #fff; }
+    .icon-turquoise { background: #00B2A9; color: #fff; }
+    .icon-orange { background: #FF6A13; color: #fff; }
+    .icon-green { background: #78BE20; color: #fff; }
+    .footer { color: #94a3b8; font-size: 13px; margin-top: 18px; }
+    table { border-collapse: collapse; width: 100%; font-size: 15px; }
+    th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: center; }
+    th { background: #F4F4F4; }
+    /* Mermaid用 */
+    .mermaid { background: #fff; border-radius: 8px; padding: 8px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <!-- 1ページ目：決定事項・アクション・議論・盛り上がった話題 -->
+  <div class="slide-container" id="slide-1">
+    <div class="header">
+      <div class="header-title">業革会議_議事録250519</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-1"></span>
+        <button class="svg-download-btn" data-slide="slide-1" style="background: none; border: none; padding: 0; cursor: pointer;" title="SVGダウンロード">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" fill="#F4F4F4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#00A9E0" stroke-width="2"/>
+            <g>
+              <path d="M22 13v13" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M17 22l5 5 5-5" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column" style="flex:1">
+        <div class="row">
+          <div class="card" style="flex:1">
+            <div class="card-title">
+              <span class="icon-magenta">✅</span>
+              決定事項
+            </div>
+            <div class="card-content">
+              <ul>
+                <li>📌 質追加ポータルの運用を今後も推進し、変更案件も同ポータルで対応する方針。</li>
+                <li>🗂️ 改造イラストや資料の変更時は、情報の一元管理・連携強化を検討。</li>
+                <li>🔽 トラブル項目のプルダウン化や、トラブル分析の自動化を検討。</li>
+                <li>🛠️ アジャイル保守や社内機器保守の一括管理体制について、関係部門と調整を進める。</li>
+                <li>📚 マニュアル類（PTP、コントラクトレビュー等）の整備・リンク集約を検討。</li>
+                <li>📄 公認書書の規格・法規制管理のテンプレート化を検討。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card" style="flex:1">
+            <div class="card-title">
+              <span class="icon-green">📝</span>
+              アクションリスト & Next Action
+            </div>
+            <div class="card-content">
+              <ul>
+                <li>【AR】質追加ポータルの運用改善案をPT2担当と協議（担当：Sumino）</li>
+                <li>【AR】改造イラスト・資料の情報連携方法を再検討（担当：Kitabata、Takahashi）</li>
+                <li>【AR】トラブル項目のプルダウン化要件をFE部門と調整（担当：Saito）</li>
+                <li>【AR】アジャイル保守の全社一括管理についてDPF・スマートファクトリー部門と協議（担当：Takase）</li>
+                <li>【AR】マニュアル類の現状調査とリンク集約案作成（担当：Teruuchi）</li>
+                <li>【AR】公認書書の規格・法規制テンプレート案を作成し、関係部門へ提案（担当：Fujihara）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="card" style="flex:1">
+            <div class="card-title">
+              <span class="icon-turquoise">💡</span>
+              議論・要点まとめ
+            </div>
+            <div class="card-content">
+              <ul>
+                <li>🔗 質追加や改造案件の情報連携不足が現場課題。ポータル運用の一元化・連携強化が必要。</li>
+                <li>🧩 トラブル分析やパーツ管理の効率化（プルダウン化・カテゴライズ）が求められている。</li>
+                <li>🛡️ 保守業務の一括管理体制が不十分。現状は部門ごとに対応が分かれており、全社的な仕組みが必要。</li>
+                <li>🔍 マニュアル類の所在不明・リンク切れが多く、情報集約・アクセス性向上が課題。</li>
+                <li>📄 公認書書の規格・法規制管理は、テンプレート化と最新情報の反映方法が未整備。</li>
+                <li>🚀 開発フローの効率化（構想設計重視、インプット削減、知見活用、納期調整体制）が提案された。</li>
+                <li>📊 優先度や業務指標の明確化、Cubics等での情報共有・可視化の要望あり。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card" style="flex:1">
+            <div class="card-title">
+              <span class="icon-orange">🔥</span>
+              会議中に盛り上がった話題
+            </div>
+            <div class="card-content">
+              <ul>
+                <li>🖥️ 質追加ポータルの運用方法・現場での使い勝手</li>
+                <li>🔽 トラブル項目のプルダウン化による分析効率化</li>
+                <li>🛡️ 保守業務の一括管理体制の必要性と現状の課題</li>
+                <li>📚 マニュアル類の整備・リンク集約の必要性</li>
+                <li>🚀 開発フローの改善（構想設計・知見活用・納期調整）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">業革会議_議事録250519</div>
+  </div>
+
+  <!-- 2ページ目：参加者一覧 -->
+  <div class="slide-container" id="slide-2">
+    <div class="header">
+      <div class="header-title">業革会議_議事録250519</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-2"></span>
+        <button class="svg-download-btn" data-slide="slide-2" style="background: none; border: none; padding: 0; cursor: pointer;" title="SVGダウンロード">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" fill="#F4F4F4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#00A9E0" stroke-width="2"/>
+            <g>
+              <path d="M22 13v13" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M17 22l5 5 5-5" stroke="#00A9E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column" style="flex:1">
+        <div class="card">
+          <div class="card-title">
+            <span class="icon-cyan">👥</span>
+            参加者一覧
+          </div>
+          <div class="card-content" style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>部署</th><th>氏名</th><th>参加時刻</th><th>退出時刻</th><th>会議滞在期間</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>ERD</td><td>Sumino, Hideki</td><td>17:02</td><td>17:56</td><td>54分</td></tr>
+                <tr><td>ERD</td><td>Kitabata, Toshinori</td><td>17:01</td><td>17:56</td><td>55分</td></tr>
+                <tr><td>PDE2</td><td>Tsukahara, Toshiya</td><td>17:01</td><td>17:56</td><td>54分</td></tr>
+                <tr><td>PDE1</td><td>Osada, Hideyuki</td><td>17:02</td><td>17:56</td><td>53分</td></tr>
+                <tr><td>RCFD</td><td>Takase, Taira</td><td>17:02</td><td>17:57</td><td>54分</td></tr>
+                <tr><td>DE2</td><td>Takahashi, Syuichi</td><td>17:03</td><td>18:48</td><td>105分</td></tr>
+                <tr><td>DE5</td><td>Kato, Kenichi</td><td>17:03</td><td>17:56</td><td>53分</td></tr>
+                <tr><td>PSTD</td><td>Saito, Michishige</td><td>17:03</td><td>17:56</td><td>52分</td></tr>
+                <tr><td>DE1</td><td>Tsuboi, Kyo</td><td>17:03</td><td>17:57</td><td>53分</td></tr>
+                <tr><td>PCTD</td><td>Teruuchi, Satoru</td><td>17:04</td><td>17:56</td><td>52分</td></tr>
+                <tr><td>DE3</td><td>Gondai, Tadashi</td><td>17:21</td><td>17:56</td><td>35分</td></tr>
+                <tr><td>LCA</td><td>Fujihara, Hideyuki</td><td>16:59</td><td>17:12</td><td>12分</td></tr>
+              </tbody>
+            </table>
+            <div style="font-size:13px;color:#888;margin-top:8px;">※参加時刻・退出時刻はhh:mm形式、会議滞在期間は四捨五入で記載。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">業革会議_議事録250519</div>
+  </div>
+  <script>
+    // 日付表示
+    function setDate(id) {
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = today.getMonth() + 1;
+      var d = today.getDate();
+      document.getElementById(id).textContent = y + '/' + String(m).padStart(2, '0') + '/' + String(d).padStart(2, '0');
+    }
+    setDate('header-date-1');
+    setDate('header-date-2');
+    // Mermaid描画
+    if (window.mermaid) {
+      mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+    }
+
+    // SVGダウンロード機能（簡易版）
+    document.querySelectorAll('.svg-download-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var slideId = btn.getAttribute('data-slide');
+        var container = document.getElementById(slideId);
+        var svgEls = container.querySelectorAll('svg');
+        if (svgEls.length > 0) {
+          // Mermaid図がある場合はそれをダウンロード
+          var svg = svgEls[0];
+          var serializer = new XMLSerializer();
+          var svgString = serializer.serializeToString(svg);
+          var blob = new Blob([svgString], {type: 'image/svg+xml'});
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.download = slideId + '.svg';
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        } else {
+          alert('SVGが見つかりません');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
