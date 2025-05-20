@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1600, initial-scale=1.0">
+  <title>Aチーム課題 As-is/Tobe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+    body { background: #F4F4F4; font-family: 'Noto Sans JP', sans-serif; }
+    .slide-container {
+      width: 1600px; height: 900px; background: #FFFFFF; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px 48px 32px 48px; margin: 40px auto 0;
+      position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+      display: flex; flex-direction: column; transition: opacity 0.3s;
+      opacity: 0; pointer-events: none; z-index: 0;
+    }
+    .slide-container.active {
+      opacity: 1; pointer-events: auto; z-index: 1;
+    }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1.5px solid #00A9E0; padding-bottom: 18px; }
+    .header-title {
+      font-size: 36px; font-weight: 700;
+      background: linear-gradient(90deg, #DA1884 0%, #00A9E0 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      letter-spacing: 1px;
+    }
+    .header-date { color: #2D2D2D; font-size: 18px; }
+    .content {
+      display: flex;
+      gap: 40px;
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      justify-content: stretch;
+      min-height: 0;
+    }
+    .card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 28px 24px 20px 24px;
+      border: 2px solid #F4F4F4;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-height: 0;
+      justify-content: flex-start;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-content {
+      font-size: 15px;
+      color: #2D2D2D;
+      line-height: 1.6;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+    }
+    .footer {
+      color: #94a3b8; font-size: 13px; margin-top: 18px;
+      display: flex; justify-content: space-between; align-items: center; position: relative;
+    }
+    .slide-nav-btns {
+      position: absolute; right: 0; bottom: 0; display: flex; gap: 12px;
+    }
+    .slide-nav-btn {
+      background: #00A9E0; color: #fff; border: none; border-radius: 8px;
+      font-size: 18px; font-weight: 700; padding: 10px 28px; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: background 0.2s;
+      margin-left: 8px;
+    }
+    .slide-nav-btn:disabled {
+      background: #b6e2f7; color: #fff; cursor: not-allowed; opacity: 0.6;
+    }
+    .icon-magenta { background: #DA1884; color: #fff; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+    .icon-green { background: #78BE20; color: #fff; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+    /* リスト装飾 */
+    .card-content ul > li {
+      font-weight: bold;
+      margin-bottom: 8px;
+      list-style: none;
+      position: relative;
+      padding-left: 2em;
+    }
+    .card-content ul > li:before {
+      content: "🔹";
+      position: absolute;
+      left: 0.2em;
+      font-size: 1.2em;
+      color: #00A9E0;
+    }
+    .card-content ul ul > li {
+      font-weight: normal;
+      list-style: none;
+      position: relative;
+      padding-left: 1.6em;
+      margin-bottom: 4px;
+    }
+    .card-content ul ul > li:before {
+      content: "👉";
+      position: absolute;
+      left: 0;
+      color: #DA1884;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body style="overflow:hidden;">
+  <!-- 課題1 -->
+  <div class="slide-container active" id="slide-1">
+    <div class="header">
+      <div class="header-title">Aチーム課題1<br>人員増加にも関わらず業務改善が実感できない・工数集計/活用の不十分さ</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-1"></span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column" style="flex:1.2">
+        <div class="card">
+          <div class="card-title"><span class="icon-magenta">現</span> As-is（現状・課題構造化）</div>
+          <div class="card-content">
+            <ul style="margin-bottom:10px;">
+              <li>部門間の縦割り文化が強く、横のつながりや全体最適な業務改善が進まない
+                <ul>
+                  <li>縦割り文化が強く横のつながりが弱い、他部署を巻き込んだ取り組みがしづらい（ID:35）</li>
+                  <li>自部署内に閉じた改善にしか目が向かない（ID:35）</li>
+                </ul>
+              </li>
+              <li>業務の属人化が進み、業務内容や担当が可視化されていない
+                <ul>
+                  <li>誰がどのような業務をどのように対応しているかがわからない（ID:708）</li>
+                  <li>属人化によって助け合える体制にない（ID:708）</li>
+                </ul>
+              </li>
+              <li>工数集計や日報は行われているが、正確性や活用が不十分
+                <ul>
+                  <li>日報や工数集計はされているが、その結果をどう活用するか不明（ID:105, まとめ）</li>
+                  <li>資料作成や会議に工数を割かれている。自動化や短縮化が必要（ID:182）</li>
+                </ul>
+              </li>
+              <li>業務の効率化や成果向上が人員増加と連動していない
+                <ul>
+                  <li>人が増えても業務改善の実感がない（ID:743）</li>
+                  <li>開発ペースが間延びしている（ID:743）</li>
+                </ul>
+              </li>
+              <li>業務プロセスや間接業務が非効率で、システム化・自動化が遅れている
+                <ul>
+                  <li>予算管理や固定資産管理がExcelや紙で非効率。システム化が必要（ADD, DE3）</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="column" style="flex:1">
+        <div class="card">
+          <div class="card-title"><span class="icon-green">理</span> Tobe（あるべき姿）</div>
+          <div class="card-content">
+            <ul>
+              <li>部門横断で全体最適な業務改善が進み、業務内容・担当が可視化されている</li>
+              <li>工数集計・日報が正確かつ自動化され、業務改善や人員配置に活用されている</li>
+              <li>属人化を排除し、誰でも業務を把握・分担できる体制</li>
+              <li>システム化・自動化により間接業務の工数を削減し、付加価値業務に集中できる</li>
+              <li>人員増加が業務効率・成果向上に直結し、実感できる組織</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Smart R&amp;D | 作成者名 | Aチーム</span>
+      <div class="slide-nav-btns">
+        <button class="slide-nav-btn" id="prev-btn-1" disabled>← 前へ</button>
+        <button class="slide-nav-btn" id="next-btn-1">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <!-- 課題2 -->
+  <div class="slide-container" id="slide-2">
+    <div class="header">
+      <div class="header-title">Aチーム課題2<br>顧客主導からの脱却と主導的なプロジェクト運営体制の構築</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-2"></span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column" style="flex:1.2">
+        <div class="card">
+          <div class="card-title"><span class="icon-magenta">現</span> As-is（現状・課題構造化）</div>
+          <div class="card-content">
+            <ul style="margin-bottom:10px;">
+              <li>顧客主導・受け身のビジネス運営が続き、主導権を持てていない
+                <ul>
+                  <li>TEL主導でビジネスできている局面があまり感じられない（ID:123, Aチーム.md）</li>
+                  <li>開発スケジュールが顧客都合で変わる、顧客の言いなりで後戻り工数が増える（Q PRO, まとめ）</li>
+                </ul>
+              </li>
+              <li>顧客からのデータ取得や情報共有が進まず、戦略的な意思決定や提案が難しい
+                <ul>
+                  <li>顧客装置のデータが取得できない、客先装置のLOGなどのデータをTML側から確認できない（DE2, ADD, ID:272）</li>
+                  <li>顧客からのフォーキャスト精度に課題、OEEが一部しか取れていない（SPC, TSMD）</li>
+                </ul>
+              </li>
+              <li>組織横断的なQCD統括やプロジェクト管理体制が不十分
+                <ul>
+                  <li>装置開発責任者を置いてQCDを統括する仕組みが必要（Aチーム.md, まとめ）</li>
+                </ul>
+              </li>
+              <li>サービスや標準化の提案が進まず、競合に遅れを取っている
+                <ul>
+                  <li>競合は有償サービスを提供しているが、TELは無償対応。サービス契約へのシフトが必要（4i PRO）</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="column" style="flex:1">
+        <div class="card">
+          <div class="card-title"><span class="icon-green">理</span> Tobe（あるべき姿）</div>
+          <div class="card-content">
+            <ul>
+              <li>TEL主導でビジネスを推進し、顧客要求に対しても主導的に提案・標準化を進める</li>
+              <li>顧客・社内データの一元管理と活用により、戦略的な意思決定・提案が可能</li>
+              <li>組織横断的なQCD統括・プロジェクト管理体制を構築</li>
+              <li>サービス・標準化の推進により、競合に対して優位性を持つ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Smart R&amp;D | 作成者名 | Aチーム</span>
+      <div class="slide-nav-btns">
+        <button class="slide-nav-btn" id="prev-btn-2">← 前へ</button>
+        <button class="slide-nav-btn" id="next-btn-2">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <!-- 課題3 -->
+  <div class="slide-container" id="slide-3">
+    <div class="header">
+      <div class="header-title">Aチーム課題3<br>評価手法・データ取得の属人化と標準化の遅れ</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="header-date" id="header-date-3"></span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="column" style="flex:1.2">
+        <div class="card">
+          <div class="card-title"><span class="icon-magenta">現</span> As-is（現状・課題構造化）</div>
+          <div class="card-content">
+            <ul style="margin-bottom:10px;">
+              <li>業務や評価手法が個人依存・属人化し、標準化・マニュアル化が進んでいない
+                <ul>
+                  <li>業務の属人化がスマート化を阻害、誰がどのような業務をしているか分からない（ID:708）</li>
+                  <li>上流工程は個々人の裁量に任されている、マニュアル化されていない・更新されていない（ID:157）</li>
+                  <li>属人化の廃止。誰がやっても同じ成果物が出てくる業務マニュアルの作成（ID:46）</li>
+                </ul>
+              </li>
+              <li>データの取得・管理が部門ごとに分散し、共有・一元管理ができていない
+                <ul>
+                  <li>現状の生産現場のデータを取得できていない、データ共有ができていない（MED, APLA）</li>
+                  <li>過去・現在の設計情報や改造履歴が把握できない、ナレッジ化が進んでいない（ID:310, 421）</li>
+                </ul>
+              </li>
+              <li>技術伝承や教育の仕組みが不十分で、同じ問い合わせや手戻りが発生
+                <ul>
+                  <li>技術伝承の課題、ノウハウの蓄積・活用ができていない（DE2, ADD, DE3）</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="column" style="flex:1">
+        <div class="card">
+          <div class="card-title"><span class="icon-green">理</span> Tobe（あるべき姿）</div>
+          <div class="card-content">
+            <ul>
+              <li>評価手法・業務プロセスの標準化・マニュアル化を徹底し、属人化を排除</li>
+              <li>データの一元管理・形式統一、ナレッジの蓄積・活用を推進</li>
+              <li>教育・技術伝承の仕組みを整備し、誰でも同じ成果物が出せる体制</li>
+              <li>効率的な業務遂行と継続的な改善が可能な組織</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Smart R&amp;D | 作成者名 | Aチーム</span>
+      <div class="slide-nav-btns">
+        <button class="slide-nav-btn" id="prev-btn-3">← 前へ</button>
+        <button class="slide-nav-btn" id="next-btn-3" disabled>次へ →</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // 日付表示
+    (function() {
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = today.getMonth() + 1;
+      var d = today.getDate();
+      document.getElementById('header-date-1').textContent = y + '/' + String(m).padStart(2, '0') + '/' + String(d).padStart(2, '0');
+      document.getElementById('header-date-2').textContent = y + '/' + String(m).padStart(2, '0') + '/' + String(d).padStart(2, '0');
+      document.getElementById('header-date-3').textContent = y + '/' + String(m).padStart(2, '0') + '/' + String(d).padStart(2, '0');
+    })();
+
+    // ページ遷移
+    const slides = [
+      document.getElementById('slide-1'),
+      document.getElementById('slide-2'),
+      document.getElementById('slide-3')
+    ];
+    let current = 0;
+    function showSlide(idx) {
+      slides.forEach((s, i) => {
+        if (i === idx) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+      // ボタン有効/無効
+      document.getElementById('prev-btn-1').disabled = idx === 0;
+      document.getElementById('next-btn-1').disabled = idx !== 0;
+      document.getElementById('prev-btn-2').disabled = idx !== 1;
+      document.getElementById('next-btn-2').disabled = idx !== 1;
+      document.getElementById('prev-btn-3').disabled = idx !== 2;
+      document.getElementById('next-btn-3').disabled = idx === slides.length - 1 ? true : true;
+    }
+    // イベント
+    document.getElementById('next-btn-1').onclick = () => { current = 1; showSlide(current); };
+    document.getElementById('prev-btn-2').onclick = () => { current = 0; showSlide(current); };
+    document.getElementById('next-btn-2').onclick = () => { current = 2; showSlide(current); };
+    document.getElementById('prev-btn-3').onclick = () => { current = 1; showSlide(current); };
+    // 初期表示
+    showSlide(0);
+
+    // キーボード操作（←→）
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' && current < slides.length - 1) {
+        current++; showSlide(current);
+      }
+      if (e.key === 'ArrowLeft' && current > 0) {
+        current--; showSlide(current);
+      }
+    });
+  </script>
+</body>
+</html>
