@@ -281,8 +281,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /*width: 120px;
-      height: 40px;*/
       overflow: hidden;
     }
     
@@ -779,348 +777,6 @@
       background: linear-gradient(180deg, #00A9E0 0%, #00B2A9 100%);
     }
     
-    /* チャットパネル */
-    .chat-panel {
-      background: var(--card-background);
-      border-radius: 16px;
-      box-shadow: var(--shadow-md);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: slideIn 0.4s ease-out;
-      flex: 0 0 420px;
-      min-width: 240px;
-      max-width: 80vw;
-      box-sizing: border-box;
-      flex-basis: 50%;
-      flex-shrink: 1;
-      flex-grow: 1;
-    }
-    
-    .chat-panel.expanded {
-      flex: 1 1 100%;
-      max-width: 100%;
-    }
-    
-    .chat-header {
-      padding: 20px 24px;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      font-weight: 600;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .chat-header-actions {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .chat-header-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition-base);
-    }
-    
-    .chat-header-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      background: var(--background-color);
-      scroll-behavior: smooth;
-    }
-    
-    .chat-messages::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    .chat-messages::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 3px;
-    }
-    
-    .chat-message {
-      margin-bottom: 16px;
-      animation: fadeIn 0.3s ease-out;
-    }
-    
-    .chat-message.user {
-      display: flex;
-      justify-content: flex-end;
-    }
-    
-    .chat-message.ai {
-      display: flex;
-      justify-content: flex-start;
-    }
-    
-    .message-bubble {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-      position: relative;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .chat-message.user .message-bubble {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border-bottom-right-radius: 4px;
-    }
-    
-    .chat-message.ai .message-bubble {
-      background: white;
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      border-bottom-left-radius: 4px;
-    }
-    
-    .message-time {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-      text-align: right;
-    }
-    
-    /* 選択UI */
-    .selection-container {
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
-      margin: 8px 0;
-      box-shadow: var(--shadow-sm);
-      animation: slideDown 0.3s ease-out;
-    }
-    
-    .selection-label {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-weight: 600;
-      margin-bottom: 8px;
-      display: block;
-    }
-    
-    .selection-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    
-    .selection-option {
-      padding: 8px 16px;
-      border: 2px solid var(--border-color);
-      border-radius: 8px;
-      background: white;
-      color: var(--text-primary);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition-base);
-    }
-    
-    .selection-option:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-      transform: translateY(-1px);
-    }
-    
-    .selection-option.selected {
-      background: var(--primary-color);
-      border-color: var(--primary-color);
-      color: white;
-    }
-    
-    .file-upload-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .file-upload-input {
-      display: none;
-    }
-    
-    .file-upload-label {
-      padding: 12px;
-      border: 2px dashed var(--border-color);
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition-base);
-      background: var(--background-color);
-    }
-    
-    .file-upload-label:hover {
-      border-color: var(--primary-color);
-      background: rgba(0, 169, 224, 0.05);
-    }
-    
-    .file-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .file-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 12px;
-      background: var(--background-color);
-      border-radius: 8px;
-      font-size: 13px;
-    }
-    
-    .file-remove {
-      color: var(--accent-color);
-      cursor: pointer;
-      font-weight: 600;
-    }
-    
-    /* チャット入力エリア */
-    .chat-input-container {
-      padding: 16px;
-      background: white;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
-    }
-    
-    .chat-input-wrapper {
-      flex: 1;
-      position: relative;
-    }
-    
-    .chat-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid var(--border-color);
-      border-radius: 12px;
-      font-size: 14px;
-      resize: none;
-      outline: none;
-      transition: var(--transition-base);
-      font-family: inherit;
-      max-height: 120px;
-      overflow-y: auto;
-    }
-    
-    .chat-input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 4px rgba(0, 169, 224, 0.1);
-    }
-    
-    .chat-input:disabled {
-      background: var(--background-color);
-      color: var(--text-secondary);
-    }
-    
-    .input-actions {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .action-btn {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition-base);
-      font-size: 18px;
-    }
-    
-    .action-btn.send {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
-    }
-    
-    .action-btn.send:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
-    }
-    
-    .action-btn.generate {
-      background: linear-gradient(135deg, var(--accent-color), #E85D75);
-      color: white;
-      box-shadow: 0 4px 12px rgba(218, 24, 132, 0.3);
-    }
-    
-    .action-btn.generate:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(218, 24, 132, 0.4);
-    }
-    
-    .action-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    
-    /* スライダー */
-    .resize-bar {
-      width: 8px;
-      cursor: ew-resize;
-      background: linear-gradient(180deg, #e8ecef 60%, #c7d7e0 100%);
-      transition: background 0.2s;
-      z-index: 10;
-      position: relative;
-      border-radius: 4px;
-      margin: 0 4px;
-      flex-shrink: 0;
-      display: none;
-    }
-    .resize-bar.active,
-    .preview-container:not(.hidden) ~ .resize-bar,
-    .resize-bar.visible {
-      display: block;
-    }
-    .resize-bar:hover,
-    .resize-bar.dragging {
-      background: linear-gradient(180deg, #00A9E0 0%, #00B2A9 100%);
-    }
-    
-    /* メインエリア */
-    .main-area {
-      flex: 1;
-      display: flex;
-      gap: 0;
-      padding: 24px;
-      overflow: hidden;
-      position: relative;
-      min-width: 0;
-      overflow-x: hidden;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    
     /* プレビューコンテナ */
     .preview-container {
       flex: 1;
@@ -1130,7 +786,6 @@
       position: relative;
       min-width: 0;
       transition: opacity 0.3s ease-out;
-      /* 追加: 最小幅を設定 */
       min-width: 320px;
       max-width: 80vw;
       box-sizing: border-box;
@@ -1162,14 +817,56 @@
       padding: 16px 20px;
       display: flex;
       align-items: center;
-      justify-content: flex-end; /* 右寄せに変更 */
-      gap: 16px; /* タブとボタンの間に余白を追加 */
+      justify-content: flex-end;
+      gap: 16px;
     }
     
     .preview-tabs {
+      width: 250px; 
+      flex: none;
       display: flex;
-      gap: 4px;
-      margin-right: auto; /* タブを左寄せ、ボタンを右寄せに */
+      gap: 0;
+      margin-right: auto;
+      background: var(--background-color);
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,169,224,0.05);
+      border: 1.5px solid var(--border-color);
+      border-bottom: none;
+    }
+    
+    .preview-tab {
+      flex: 1 1 0;
+      text-align: center;
+      padding: 14px 0 12px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      border-right: 1.5px solid var(--border-color);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .preview-tab:last-child {
+      border-right: none;
+    }
+    
+    .preview-tab.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,169,224,0.08);
+      border-bottom: 3px solid var(--accent-color);
+      z-index: 2;
+    }
+    
+    .preview-tab:not(.active):hover {
+      background: rgba(0,169,224,0.07);
+      color: var(--primary-color);
     }
     
     .preview-actions {
@@ -1177,11 +874,11 @@
       gap: 8px;
     }
     
-    .preview-action-btn, .download-dropdown-btn {
+    .preview-action-btn {
       width: 32px;
       height: 32px;
       border: none;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* モダンな配色 */
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       border-radius: 8px;
       cursor: pointer;
@@ -1192,7 +889,7 @@
       box-shadow: 0 2px 8px rgba(0,169,224,0.10);
     }
     
-    .preview-action-btn:hover, .download-dropdown-btn:hover, .download-dropdown-btn.active {
+    .preview-action-btn:hover {
       background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
       color: #fff;
       box-shadow: 0 4px 16px rgba(0,169,224,0.18);
@@ -1202,24 +899,29 @@
       position: relative;
       display: inline-block;
     }
+    
     .download-dropdown-btn {
       width: 32px;
       height: 32px;
       border: none;
-      background: var(--background-color);
-      color: var(--text-secondary);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: var(--transition-base);
+      box-shadow: 0 2px 8px rgba(0,169,224,0.10);
     }
+    
     .download-dropdown-btn:hover,
     .download-dropdown-btn.active {
-      background: var(--border-color);
-      color: var(--text-primary);
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,169,224,0.18);
     }
+    
     .download-dropdown-list {
       display: none;
       position: absolute;
@@ -1233,9 +935,11 @@
       z-index: 100;
       padding: 4px 0;
     }
+    
     .download-dropdown.open .download-dropdown-list {
       display: block;
     }
+    
     .download-dropdown-item {
       width: 100%;
       padding: 10px 16px;
@@ -1247,6 +951,7 @@
       cursor: pointer;
       transition: background 0.2s;
     }
+    
     .download-dropdown-item:hover {
       background: var(--background-color);
     }
@@ -1285,6 +990,43 @@
     }
     .preview-toggle.hidden {
       display: none;
+    }
+    
+    #previewFrame {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      min-width: 0;
+      border: none;
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      display: block;
+    }
+    
+    .preview-content {
+      flex: 1;
+      overflow: auto;
+      background: var(--background-color);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .code-view {
+      flex: 1;
+      overflow: auto;
+      background: var(--background-color);
+      padding: 20px;
+      font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre;
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
     }
     
     /* レスポンシブ */
@@ -1494,7 +1236,6 @@
                     <option value="v1">v1 (最新)</option>
                   </select>
                 </div>
-                <!-- ▼ ダウンロードドロップダウンに変更 -->
                 <div class="download-dropdown" id="downloadDropdown">
                   <button class="download-dropdown-btn" id="downloadDropdownBtn" title="ダウンロード">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -1510,7 +1251,6 @@
                     <button class="download-dropdown-item" onclick="downloadSVG()">SVG</button>
                   </div>
                 </div>
-                <!-- ▲ -->
                 <button class="preview-action-btn" onclick="hidePreview()" title="閉じる">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1519,7 +1259,6 @@
               </div>
             </div>
             <div class="preview-content" style="position:relative;">
-              <!-- プレビュータブ内に初期テキストを表示するdivを追加 -->
               <div id="previewPlaceholder" style="display:block; color:#888; text-align:center; font-size:16px; padding:40px 0;">
                 生成ボタンを押すと、ここに資料のプレビューが表示されます
               </div>
@@ -2110,6 +1849,40 @@
       appState.isPreviewVisible = false;
     }
 
+    // HTMLコードをインデント整形して表示する関数
+    function formatHTML(html) {
+      if (!html) return '';
+      
+      let formatted = '';
+      let pad = 0;
+      
+      // まず改行でタグを分割
+      const tokens = html.replace(/></g, '>\n<').split('\n');
+      
+      tokens.forEach(function(token) {
+        const trimmed = token.trim();
+        if (!trimmed) return;
+        
+        // 終了タグの場合はインデントを減らす
+        if (trimmed.startsWith('</')) {
+          pad = Math.max(0, pad - 1);
+        }
+        
+        // インデントを追加して行を構築
+        formatted += '  '.repeat(pad) + trimmed + '\n';
+        
+        // 開始タグの場合はインデントを増やす（自己終了タグ除く）
+        if (trimmed.startsWith('<') && 
+            !trimmed.startsWith('</') && 
+            !trimmed.endsWith('/>') &&
+            !trimmed.match(/<(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)/i)) {
+          pad++;
+        }
+      });
+      
+      return formatted;
+    }
+
     // プレビュータブ切替
     function switchPreviewTab(tab) {
       const tabs = document.querySelectorAll('.preview-tab');
@@ -2136,13 +1909,15 @@
       } else {
         previewPlaceholder.style.display = 'none';
         previewFrame.style.display = 'none';
+        // 整形して表示
+        let html = appState.versions.length ? appState.versions[appState.versions.length-1].content : '';
+        codeView.textContent = html ? formatHTML(html) : 'コードが生成されていません。';
         codeView.style.display = 'block';
       }
       appState.currentTab = tab;
     }
-
+    
     // 生成処理
-   
     document.getElementById('generateBtn').addEventListener('click', () => {
       const generateBtn = document.getElementById('generateBtn');
       generateBtn.disabled = true;
@@ -2464,6 +2239,123 @@
         `<option value="${v.id}">${v.id} ${index === appState.versions.length - 1 ? '(最新)' : ''}</option>`
       ).join('');
     }
+    
+    // ダウンロード機能の実装
+    function downloadHTMLCodeCopy() {
+      if (appState.versions.length === 0) {
+        alert('ダウンロードするコンテンツがありません。');
+        return;
+      }
+      
+      const content = appState.versions[appState.versions.length - 1].content;
+      const formattedContent = formatHTML(content);
+      
+      // クリップボードにコピー
+      navigator.clipboard.writeText(formattedContent).then(() => {
+        alert('HTMLコードをクリップボードにコピーしました！');
+      }).catch(err => {
+        console.error('コピーに失敗しました:', err);
+        // フォールバック: テキストエリアを使用
+        const textarea = document.createElement('textarea');
+        textarea.value = formattedContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('HTMLコードをクリップボードにコピーしました！');
+      });
+      
+      document.getElementById('downloadDropdown').classList.remove('open');
+    }
+    
+    function downloadPDF() {
+      if (appState.versions.length === 0) {
+        alert('ダウンロードするコンテンツがありません。');
+        return;
+      }
+      
+      // PDF出力機能（実際の実装ではサーバー側でPDF生成）
+      const content = appState.versions[appState.versions.length - 1].content;
+      
+      // 新しいウィンドウでプレビューを開き、印刷ダイアログを表示
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>PDF出力用プレビュー</title>
+          <style>
+            body { font-family: 'Noto Sans JP', sans-serif; margin: 20px; }
+            @media print {
+              body { margin: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          ${content.replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/, '').replace(/<\/body>[\s\S]*?<\/html>/, '')}
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      
+      // 少し待ってから印刷ダイアログを表示
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+      
+      document.getElementById('downloadDropdown').classList.remove('open');
+    }
+    
+    function downloadSVG() {
+      if (appState.versions.length === 0) {
+        alert('ダウンロードするコンテンツがありません。');
+        return;
+      }
+      
+      // SVG要素を検索して抽出
+      const content = appState.versions[appState.versions.length - 1].content;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'text/html');
+      const svgElements = doc.querySelectorAll('svg');
+      
+      if (svgElements.length === 0) {
+        alert('SVG要素が見つかりません。図解コンテンツのみSVGダウンロードが可能です。');
+        return;
+      }
+      
+      // 最初のSVG要素をダウンロード
+      const svgElement = svgElements[0];
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      
+      // ダウンロードリンクを作成
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(svgBlob);
+      link.download = `diagram_${new Date().getTime()}.svg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      
+      document.getElementById('downloadDropdown').classList.remove('open');
+    }
+    
+    // ダウンロードドロップダウンの制御
+    const downloadDropdown = document.getElementById('downloadDropdown');
+    const downloadDropdownBtn = document.getElementById('downloadDropdownBtn');
+    
+    // ダウンロードボタンクリックイベント
+    downloadDropdownBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      downloadDropdown.classList.toggle('open');
+    });
+    
+    // 他の場所をクリックしたらドロップダウンを閉じる
+    document.addEventListener('click', (e) => {
+      if (!downloadDropdown.contains(e.target)) {
+        downloadDropdown.classList.remove('open');
+      }
+    });
     
     // ヘルパー関数
     function getModeLabel(mode) {
