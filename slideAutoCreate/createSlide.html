@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資料自動作成アプリ UIモックアップ</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    
+    :root {
+      --primary-color: #00A9E0;
+      --secondary-color: #00B2A9;
+      --accent-color: #DA1884;
+      --background-color: #F8FAFB;
+      --card-background: #FFFFFF;
+      --border-color: #E8ECEF;
+      --text-primary: #1A1F36;
+      --text-secondary: #5A6376;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 260px;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--background-color);
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* アニメーション定義 */
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes slideDown {
+      from { max-height: 0; opacity: 0; }
+      to { max-height: 600px; opacity: 1; }
+    }
+    
+    /* ルートコンテナ */
+    .app-root {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      background: var(--background-color);
+    }
+    
+    /* オーバーレイ */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-base);
+      z-index: 40;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* サイドバー */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--card-background);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .sidebar-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .sidebar-close:hover {
+      background: var(--background-color);
+    }
+    
+    .nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-base);
+      position: relative;
+      text-decoration: none;
+    }
+    
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-item:hover {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .nav-item.active {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.08);
+      font-weight: 600;
+    }
+    
+    .nav-item.active::before {
+      transform: scaleX(1);
+    }
+    
+    .nav-icon {
+      font-size: 20px;
+    }
+    
+    .user-info {
+      padding: 24px;
+      border-top: 1px solid var(--border-color);
+      background: var(--background-color);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .user-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* メインコンテンツ */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--background-color);
+      position: relative;
+      width: 100%;
+    }
+    
+    /* ヘッダー */
+    .header {
+      background: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .menu-toggle {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .menu-toggle:hover {
+      background: var(--background-color);
+    }
+    
+    .menu-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .header-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /*width: 120px;
+      height: 40px;*/
+      overflow: hidden;
+    }
+    
+    .header-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--background-color);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    /* ステータスバー */
+    .status-bar-container {
+      position: relative;
+      background: var(--card-background);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex: 1;
+      margin: 0 auto;
+      max-width: 1000px;
+    }
+    
+    .status-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .status-step:hover {
+      transform: translateY(-2px);
+    }
+    
+    .status-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--background-color);
+      border: 3px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: var(--transition-base);
+      position: relative;
+    }
+    
+    .status-step.active .status-circle {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-step.completed .status-circle {
+      background: var(--secondary-color);
+      border-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .status-step.completed .status-circle::after {
+      content: '✓';
+      position: absolute;
+      font-size: 20px;
+    }
+    
+    .status-label {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: var(--transition-base);
+    }
+    
+    .status-step.active .status-label,
+    .status-step.completed .status-label {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .status-line {
+      flex: 1;
+      height: 3px;
+      background: var(--border-color);
+      margin: 0 -20px;
+      z-index: 1;
+      transition: var(--transition-base);
+    }
+    
+    .status-step.completed + .status-line {
+      background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+    }
+    
+    /* メインエリア */
+    .main-area {
+      flex: 1;
+      display: flex;
+      gap: 0;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+      min-width: 0;
+      overflow-x: hidden;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* チャットパネル */
+    .chat-panel {
+      background: var(--card-background);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideIn 0.4s ease-out;
+      flex: 0 0 420px;
+      min-width: 240px;
+      max-width: 80vw;
+      box-sizing: border-box;
+      flex-basis: 50%;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+    
+    .chat-panel.expanded {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+    
+    .chat-header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      font-weight: 600;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .chat-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .chat-header-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+    
+    .chat-header-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      background: var(--background-color);
+      scroll-behavior: smooth;
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+    
+    .chat-message {
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .chat-message.user {
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .chat-message.ai {
+      display: flex;
+      justify-content: flex-start;
+    }
+    
+    .message-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .chat-message.user .message-bubble {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .chat-message.ai .message-bubble {
+      background: white;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    /* 選択UI */
+    .selection-container {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 8px 0;
+      box-shadow: var(--shadow-sm);
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    .selection-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .selection-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .selection-option {
+      padding: 8px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .selection-option:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-1px);
+    }
+    
+    .selection-option.selected {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+    
+    .file-upload-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .file-upload-input {
+      display: none;
+    }
+    
+    .file-upload-label {
+      padding: 12px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      background: var(--background-color);
+    }
+    
+    .file-upload-label:hover {
+      border-color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--background-color);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .file-remove {
+      color: var(--accent-color);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    /* チャット入力エリア */
+    .chat-input-container {
+      padding: 16px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    
+    .chat-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    .chat-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      transition: var(--transition-base);
+      font-family: inherit;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    
+    .chat-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 169, 224, 0.1);
+    }
+    
+    .chat-input:disabled {
+      background: var(--background-color);
+      color: var(--text-secondary);
+    }
+    
+    .input-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .action-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-size: 18px;
+    }
+    
+    .action-btn.send {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+    }
+    
+    .action-btn.send:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
+    }
+    
+    .action-btn.generate {
+      background: linear-gradient(135deg, var(--accent-color), #E85D75);
+      color: white;
+      box-shadow: 0 4px 12px rgba(218, 24, 132, 0.3);
+    }
+    
+    .action-btn.generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(218, 24, 132, 0.4);
+    }
+    
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    /* スライダー */
+    .resize-bar {
+      width: 8px;
+      cursor: ew-resize;
+      background: linear-gradient(180deg, #e8ecef 60%, #c7d7e0 100%);
+      transition: background 0.2s;
+      z-index: 10;
+      position: relative;
+      border-radius: 4px;
+      margin: 0 4px;
+      flex-shrink: 0;
+      display: none;
+    }
+    .resize-bar.active,
+    .preview-container:not(.hidden) ~ .resize-bar,
+    .resize-bar.visible {
+      display: block;
+    }
+    .resize-bar:hover,
+    .resize-bar.dragging {
+      background: linear-gradient(180deg, #00A9E0 0%, #00B2A9 100%);
+    }
+    
+    /* チャットパネル */
+    .chat-panel {
+      background: var(--card-background);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideIn 0.4s ease-out;
+      flex: 0 0 420px;
+      min-width: 240px;
+      max-width: 80vw;
+      box-sizing: border-box;
+      flex-basis: 50%;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+    
+    .chat-panel.expanded {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+    
+    .chat-header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      font-weight: 600;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .chat-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .chat-header-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+    
+    .chat-header-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      background: var(--background-color);
+      scroll-behavior: smooth;
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+    
+    .chat-message {
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .chat-message.user {
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .chat-message.ai {
+      display: flex;
+      justify-content: flex-start;
+    }
+    
+    .message-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .chat-message.user .message-bubble {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .chat-message.ai .message-bubble {
+      background: white;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    /* 選択UI */
+    .selection-container {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 8px 0;
+      box-shadow: var(--shadow-sm);
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    .selection-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .selection-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .selection-option {
+      padding: 8px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .selection-option:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-1px);
+    }
+    
+    .selection-option.selected {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+    
+    .file-upload-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .file-upload-input {
+      display: none;
+    }
+    
+    .file-upload-label {
+      padding: 12px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      background: var(--background-color);
+    }
+    
+    .file-upload-label:hover {
+      border-color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--background-color);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .file-remove {
+      color: var(--accent-color);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    /* チャット入力エリア */
+    .chat-input-container {
+      padding: 16px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    
+    .chat-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    .chat-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      transition: var(--transition-base);
+      font-family: inherit;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    
+    .chat-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 169, 224, 0.1);
+    }
+    
+    .chat-input:disabled {
+      background: var(--background-color);
+      color: var(--text-secondary);
+    }
+    
+    .input-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .action-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-size: 18px;
+    }
+    
+    .action-btn.send {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+    }
+    
+    .action-btn.send:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
+    }
+    
+    .action-btn.generate {
+      background: linear-gradient(135deg, var(--accent-color), #E85D75);
+      color: white;
+      box-shadow: 0 4px 12px rgba(218, 24, 132, 0.3);
+    }
+    
+    .action-btn.generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(218, 24, 132, 0.4);
+    }
+    
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    /* スライダー */
+    .resize-bar {
+      width: 8px;
+      cursor: ew-resize;
+      background: linear-gradient(180deg, #e8ecef 60%, #c7d7e0 100%);
+      transition: background 0.2s;
+      z-index: 10;
+      position: relative;
+      border-radius: 4px;
+      margin: 0 4px;
+      flex-shrink: 0;
+      display: none;
+    }
+    .resize-bar.active,
+    .preview-container:not(.hidden) ~ .resize-bar,
+    .resize-bar.visible {
+      display: block;
+    }
+    .resize-bar:hover,
+    .resize-bar.dragging {
+      background: linear-gradient(180deg, #00A9E0 0%, #00B2A9 100%);
+    }
+    
+    /* メインエリア */
+    .main-area {
+      flex: 1;
+      display: flex;
+      gap: 0;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+      min-width: 0;
+      overflow-x: hidden;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* プレビューコンテナ */
+    .preview-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 0;
+      transition: opacity 0.3s ease-out;
+      /* 追加: 最小幅を設定 */
+      min-width: 320px;
+      max-width: 80vw;
+      box-sizing: border-box;
+      flex-basis: 50%;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+    
+    .preview-container.hidden {
+      display: none;
+    }
+    
+    .preview-panel {
+      width: 100%;
+      height: 100%;
+      background: var(--card-background);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.4s ease-out;
+    }
+    
+    .preview-header {
+      background: white;
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; /* 右寄せに変更 */
+      gap: 16px; /* タブとボタンの間に余白を追加 */
+    }
+    
+    .preview-tabs {
+      display: flex;
+      gap: 4px;
+      margin-right: auto; /* タブを左寄せ、ボタンを右寄せに */
+    }
+    
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .preview-action-btn, .download-dropdown-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* モダンな配色 */
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+      box-shadow: 0 2px 8px rgba(0,169,224,0.10);
+    }
+    
+    .preview-action-btn:hover, .download-dropdown-btn:hover, .download-dropdown-btn.active {
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,169,224,0.18);
+    }
+    
+    .download-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .download-dropdown-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--background-color);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+    .download-dropdown-btn:hover,
+    .download-dropdown-btn.active {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+    .download-dropdown-list {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 110%;
+      min-width: 140px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      z-index: 100;
+      padding: 4px 0;
+    }
+    .download-dropdown.open .download-dropdown-list {
+      display: block;
+    }
+    .download-dropdown-item {
+      width: 100%;
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .download-dropdown-item:hover {
+      background: var(--background-color);
+    }
+    
+    /* ステータスバー右端にプレビューボタン配置 */
+    .status-bar-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .status-bar {
+      flex: 1;
+    }
+    .preview-toggle {
+      position: static;
+      right: unset;
+      bottom: unset;
+      margin-left: 16px;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 169, 224, 0.4);
+      transition: var(--transition-base);
+      z-index: 2;
+    }
+    .preview-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(0, 169, 224, 0.5);
+    }
+    .preview-toggle.hidden {
+      display: none;
+    }
+    
+    /* レスポンシブ */
+    @media (max-width: 1024px) {
+      .chat-panel {
+        flex: 0 0 360px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-area {
+        flex-direction: column;
+        padding: 16px;
+      }
+      
+      .chat-panel,
+      .chat-panel.expanded {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .preview-container {
+        height: 400px;
+      }
+      
+      .status-bar-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-root">
+    <!-- オーバーレイ -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">SlideGenius</div>
+        <button class="sidebar-close" onclick="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="nav">
+        <a class="nav-item" href="index.html">
+          <span class="nav-icon">🏠</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a class="nav-item" href="createSlide.html">
+          <span class="nav-icon">➕</span>
+          <span>新規作成</span>
+        </a>
+        <a class="nav-item" href="template.html">
+          <span class="nav-icon">📋</span>
+          <span>テンプレート管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">🕑</span>
+          <span>履歴管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚙️</span>
+          <span>設定</span>
+        </a>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">山</div>
+        <div class="user-name">山田 太郎</div>
+        <div class="user-email">yamada@example.com</div>
+      </div>
+    </nav>
+    
+    <!-- メインコンテンツ -->
+    <div class="main-content">
+      <!-- ヘッダー -->
+      <header class="header">
+        <div class="header-left">
+          <button class="menu-toggle" onclick="toggleSidebar()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="header-logo">
+            <img src="logo_slideapp.svg" alt="SlideGenius">
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <span>📚</span>
+            <span>使い方</span>
+          </button>
+          <button class="btn btn-primary" onclick="startNewCreation()">
+            <span>➕</span>
+            <span>新規作成</span>
+          </button>
+        </div>
+      </header>
+      
+      <!-- ステータスバー -->
+      <div class="status-bar-container">
+        <div class="status-bar" id="statusBar">
+          <div class="status-step" data-step="1">
+            <div class="status-circle">1</div>
+            <div class="status-label">モード選択</div>
+          </div>
+          <div class="status-line"></div>
+          <div class="status-step" data-step="2">
+            <div class="status-circle">2</div>
+            <div class="status-label">入力方法</div>
+          </div>
+          <div class="status-line"></div>
+          <div class="status-step" data-step="3">
+            <div class="status-circle">3</div>
+            <div class="status-label">AIチャット</div>
+          </div>
+          <div class="status-line"></div>
+          <div class="status-step" data-step="4">
+            <div class="status-circle">4</div>
+            <div class="status-label">プレビュー</div>
+          </div>
+          <div class="status-line"></div>
+          <div class="status-step" data-step="5">
+            <div class="status-circle">5</div>
+            <div class="status-label">完了</div>
+          </div>
+        </div>
+        <button class="preview-toggle" id="previewToggle" onclick="showPreview()" title="プレビューを表示">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- メインエリア -->
+      <div class="main-area" id="mainArea">
+        <!-- チャットパネル -->
+        <div class="chat-panel expanded" id="chatPanel">
+          <div class="chat-header">
+            <span>AIアシスタント</span>
+            <div class="chat-header-actions">
+              <button class="chat-header-btn" title="履歴をクリア">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v11a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="chat-messages" id="chatMessages">
+            <!-- 初期メッセージ -->
+            <div class="chat-message ai">
+              <div class="message-bubble">
+                こんにちは！資料作成をお手伝いします。
+                どのような資料を作成しますか？
+              </div>
+              <div class="message-time">10:00</div>
+            </div>
+          </div>
+          
+          <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+              <textarea 
+                class="chat-input" 
+                id="chatInput"
+                placeholder="メッセージを入力..."
+                rows="1"
+                disabled
+              ></textarea>
+            </div>
+            <div class="input-actions">
+              <button class="action-btn send" id="sendBtn" disabled title="送信">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="action-btn generate" id="generateBtn" style="display: none;" title="生成">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- リサイズバー追加 -->
+        <div class="resize-bar" id="resizeBar"></div>
+        
+        <!-- プレビューコンテナ -->
+        <div class="preview-container hidden" id="previewContainer">
+          <!-- プレビューパネル -->
+          <div class="preview-panel" id="previewPanel">
+            <div class="preview-header">
+              <div class="preview-tabs">
+                <button class="preview-tab active" onclick="switchPreviewTab('preview')">プレビュー</button>
+                <button class="preview-tab" onclick="switchPreviewTab('code')">HTMLコード</button>
+              </div>
+              <div class="preview-actions">
+                <div class="version-selector">
+                  <label>バージョン:</label>
+                  <select id="versionSelect">
+                    <option value="v1">v1 (最新)</option>
+                  </select>
+                </div>
+                <!-- ▼ ダウンロードドロップダウンに変更 -->
+                <div class="download-dropdown" id="downloadDropdown">
+                  <button class="download-dropdown-btn" id="downloadDropdownBtn" title="ダウンロード">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <svg width="12" height="12" style="margin-left:2px;" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <div class="download-dropdown-list" id="downloadDropdownList">
+                    <button class="download-dropdown-item" onclick="downloadHTMLCodeCopy()">HTML_CodeCopy</button>
+                    <button class="download-dropdown-item" onclick="downloadPDF()">PDF</button>
+                    <button class="download-dropdown-item" onclick="downloadSVG()">SVG</button>
+                  </div>
+                </div>
+                <!-- ▲ -->
+                <button class="preview-action-btn" onclick="hidePreview()" title="閉じる">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="preview-content" style="position:relative;">
+              <!-- プレビュータブ内に初期テキストを表示するdivを追加 -->
+              <div id="previewPlaceholder" style="display:block; color:#888; text-align:center; font-size:16px; padding:40px 0;">
+                生成ボタンを押すと、ここに資料のプレビューが表示されます
+              </div>
+              <iframe class="preview-iframe" id="previewFrame" style="display:none;"></iframe>
+              <div class="code-view" id="codeView" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // グローバル状態管理
+    const appState = {
+      currentStep: 1,
+      mode: null,
+      subMode: null,
+      inputMethod: null,
+      selectedTemplate: null,
+      uploadedFiles: [],
+      messages: [],
+      versions: [],
+      currentVersion: 0,
+      isPreviewVisible: false,
+      currentTab: 'preview',
+      diagramType: null
+    };
+    
+    // テンプレートデータ
+    const templates = {
+      slide_single: [
+        { id: 'exec-summary', name: 'エグゼクティブ向け要約', icon: '👔' },
+        { id: 'meeting-minutes', name: '会議議事録', icon: '📝' },
+        { id: 'progress-report', name: '進捗・成果報告', icon: '📊' },
+        { id: 'infographic', name: 'インフォグラフィック', icon: '🎨' },
+        { id: 'news-flash', name: '速報資料', icon: '⚡' },
+        { id: 'kpi-dashboard', name: 'KPIダッシュボード', icon: '📈' }
+      ],
+      slide_multi: [
+        { id: 'proposal', name: '企画・提案書', icon: '💡' },
+        { id: 'project-report', name: 'プロジェクト報告書', icon: '📋' },
+        { id: 'training', name: '研修・教育資料', icon: '🎓' },
+        { id: 'product-intro', name: '製品紹介', icon: '📦' },
+        { id: 'presentation', name: '会議用プレゼン資料', icon: '🖥️' },
+        { id: 'design-review', name: '装置設計DR資料', icon: '⚙️' },
+        { id: 'experiment-report', name: '実験報告資料', icon: '🔬' }
+      ],
+      report: [
+        { id: 'industry-analysis', name: '業界分析', icon: '🏢' },
+        { id: 'market-research', name: '市場調査', icon: '🔍' },
+        { id: 'tech-trends', name: '技術トレンド解説', icon: '💻' },
+        { id: 'product-comparison', name: '製品比較', icon: '⚖️' },
+        { id: 'improvement', name: '業務改善', icon: '📈' },
+        { id: 'data-analysis', name: 'データ分析', icon: '📊' },
+        { id: 'regular-report', name: '定期レポート', icon: '📅' },
+        { id: 'experiment-result', name: '実験レポート', icon: '🧪' }
+      ]
+    };
+    
+    // サイドバー制御
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+    
+    // オーバーレイクリックでサイドバーを閉じる
+    document.getElementById('overlay').addEventListener('click', () => {
+      toggleSidebar();
+    });
+    
+    // 新規作成開始
+    function startNewCreation() {
+      // サイドバーを閉じる
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      
+      // 状態をリセット
+      appState.currentStep = 1;
+      appState.mode = null;
+      appState.subMode = null;
+      appState.inputMethod = null;
+      appState.selectedTemplate = null;
+      appState.diagramType = null;
+      
+      // UIをリセット
+      updateStatusBar(1);
+      clearChat();
+      hidePreview();
+      
+      // 初期メッセージとモード選択を表示
+      addMessage('ai', 'どのモードで資料を作成しますか？');
+      showModeSelection();
+    }
+    
+    // ステータスバー更新
+    function updateStatusBar(step) {
+      const steps = document.querySelectorAll('.status-step');
+      steps.forEach((stepEl, index) => {
+        if (index + 1 < step) {
+          stepEl.classList.add('completed');
+          stepEl.classList.remove('active');
+        } else if (index + 1 === step) {
+          stepEl.classList.add('active');
+          stepEl.classList.remove('completed');
+        } else {
+          stepEl.classList.remove('active', 'completed');
+        }
+      });
+      appState.currentStep = step;
+    }
+    
+    // チャットメッセージ追加
+    function addMessage(type, content, isSelection = false) {
+      const messagesEl = document.getElementById('chatMessages');
+      const messageEl = document.createElement('div');
+      messageEl.className = `chat-message ${type}`;
+      
+      if (isSelection) {
+        messageEl.innerHTML = content;
+      } else {
+        const time = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        messageEl.innerHTML = `
+          <div class="message-bubble">${content}</div>
+          <div class="message-time">${time}</div>
+        `;
+      }
+      
+      messagesEl.appendChild(messageEl);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      
+      // メッセージを状態に保存
+      appState.messages.push({ type, content });
+    }
+    
+    // チャットクリア
+    function clearChat() {
+      const messagesEl = document.getElementById('chatMessages');
+      messagesEl.innerHTML = `
+        <div class="chat-message ai">
+          <div class="message-bubble">
+            こんにちは！資料作成をお手伝いします。
+            どのような資料を作成しますか？
+          </div>
+          <div class="message-time">${new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+      `;
+      appState.messages = [];
+    }
+    
+    // モード選択表示
+    function showModeSelection() {
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">作成モードを選択</label>
+          <div class="selection-options">
+            <button class="selection-option" onclick="selectMode('slide')">📊 スライド</button>
+            <button class="selection-option" onclick="selectMode('report')">📄 レポート</button>
+            <button class="selection-option" onclick="selectMode('diagram')">📈 図解生成</button>
+            <button class="selection-option" onclick="selectMode('draft')">✍️ 原稿作成</button>
+          </div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // モード選択処理
+    function selectMode(mode) {
+      appState.mode = mode;
+      
+      // 選択をハイライト
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(getModeLabel(mode))) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      // ユーザーメッセージとして選択を表示
+      setTimeout(() => {
+        addMessage('user', `${getModeLabel(mode)}モードで作成します`);
+        
+        // 次のステップへ
+        updateStatusBar(2);
+        
+        // モードに応じた次の質問
+        setTimeout(() => {
+          if (mode === 'slide') {
+            showSlideTypeSelection();
+          } else if (mode === 'report') {
+            showInputMethodSelection();
+          } else if (mode === 'diagram') {
+            showDiagramTypeSelection();
+          } else if (mode === 'draft') {
+            showDraftInputSelection();
+          }
+        }, 500);
+      }, 300);
+    }
+    
+    // スライドタイプ選択
+    function showSlideTypeSelection() {
+      addMessage('ai', 'スライドの枚数を選択してください');
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">スライド枚数</label>
+          <div class="selection-options">
+            <button class="selection-option" onclick="selectSlideType('single')">📄 1枚スライド</button>
+            <button class="selection-option" onclick="selectSlideType('multi')">📚 複数枚スライド</button>
+          </div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // スライドタイプ選択処理
+    function selectSlideType(type) {
+      appState.subMode = type;
+      
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(type === 'single' ? '1枚' : '複数枚')) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `${type === 'single' ? '1枚' : '複数枚'}スライドで作成します`);
+        setTimeout(() => {
+          showInputMethodSelection();
+        }, 500);
+      }, 300);
+    }
+    
+    // 入力方法選択表示
+    function showInputMethodSelection() {
+      addMessage('ai', 'どのように資料を作成しますか？');
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">作成方法を選択</label>
+          <div class="selection-options">
+            <button class="selection-option" onclick="selectInputMethod('template')">📋 テンプレートから</button>
+            <button class="selection-option" onclick="selectInputMethod('upload')">📤 原稿アップロード</button>
+            <button class="selection-option" onclick="selectInputMethod('chat')">💬 AIと対話して作成</button>
+          </div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // 入力方法選択処理
+    function selectInputMethod(method) {
+      appState.inputMethod = method;
+      
+      // 選択をハイライト
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(getInputMethodLabel(method))) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `${getInputMethodLabel(method)}で作成します`);
+        updateStatusBar(3);
+        
+        setTimeout(() => {
+          if (method === 'template') {
+            showTemplateSelection();
+          } else if (method === 'upload') {
+            showFileUpload();
+          } else if (method === 'chat') {
+            enableChat();
+          }
+        }, 500);
+      }, 300);
+    }
+    
+    // テンプレート選択表示
+    function showTemplateSelection() {
+      addMessage('ai', 'テンプレートを選択してください');
+      let templateList = [];
+      
+      if (appState.mode === 'slide') {
+        if (appState.subMode === 'single') {
+          templateList = templates.slide_single;
+        } else {
+          templateList = templates.slide_multi;
+        }
+      } else if (appState.mode === 'report') {
+        templateList = templates.report;
+      }
+      
+      const optionsHTML = templateList.map(t => 
+        `<button class="selection-option" onclick="selectTemplate('${t.id}')">${t.icon} ${t.name}</button>`
+      ).join('');
+      
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">テンプレート一覧</label>
+          <div class="selection-options">${optionsHTML}</div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // テンプレート選択処理
+    function selectTemplate(templateId) {
+      appState.selectedTemplate = templateId;
+      
+      // テンプレート名を取得
+      let templateName = '';
+      let allTemplates = [...templates.slide_single, ...templates.slide_multi, ...templates.report];
+      const template = allTemplates.find(t => t.id === templateId);
+      if (template) {
+        templateName = template.name;
+      }
+      
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(templateName)) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `テンプレート「${templateName}」を選択しました`);
+        
+        // エグゼクティブサマリーの場合の特別処理
+        if (templateId === 'exec-summary') {
+          setTimeout(() => {
+            addMessage('ai', 'エグゼクティブサマリーの作成方法を選択してください');
+            const selectionHTML = `
+              <div class="selection-container">
+                <label class="selection-label">入力方法</label>
+                <div class="selection-options">
+                  <button class="selection-option" onclick="selectTemplateInputMethod('upload')">📤 原稿をアップロード</button>
+                  <button class="selection-option" onclick="selectTemplateInputMethod('chat')">💬 AIと対話して作成</button>
+                </div>
+              </div>
+            `;
+            addMessage('ai', selectionHTML, true);
+          }, 500);
+        } else {
+          // その他のテンプレートは直接生成へ
+          showGenerateButton();
+        }
+      }, 300);
+    }
+    
+    // テンプレート入力方法選択
+    function selectTemplateInputMethod(method) {
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(method === 'upload' ? 'アップロード' : 'AIと対話')) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `${method === 'upload' ? '原稿をアップロード' : 'AIと対話して作成'}します`);
+        
+        setTimeout(() => {
+          if (method === 'upload') {
+            showFileUpload();
+          } else {
+            enableChat();
+          }
+        }, 500);
+      }, 300);
+    }
+    
+    // ファイルアップロード表示
+    function showFileUpload() {
+      addMessage('ai', '原稿ファイルをアップロードしてください');
+      const uploadHTML = `
+        <div class="selection-container">
+          <div class="file-upload-container">
+            <input type="file" id="fileInput" class="file-upload-input" multiple onchange="handleFileUpload(event)">
+            <label for="fileInput" class="file-upload-label">
+              📁 クリックしてファイルを選択<br>
+              <small>複数ファイル選択可能</small>
+            </label>
+            <div class="file-list" id="fileList"></div>
+          </div>
+        </div>
+      `;
+      addMessage('ai', uploadHTML, true);
+    }
+    
+    // ファイルアップロード処理
+    function handleFileUpload(event) {
+      const files = Array.from(event.target.files);
+      appState.uploadedFiles = files;
+      
+      const fileListEl = document.getElementById('fileList');
+      fileListEl.innerHTML = files.map((file, index) => `
+        <div class="file-item">
+          <span>📄 ${file.name}</span>
+          <span class="file-remove" onclick="removeFile(${index})">×</span>
+        </div>
+      `).join('');
+      
+      if (files.length > 0) {
+        setTimeout(() => {
+          addMessage('user', `${files.length}個のファイルをアップロードしました`);
+          showGenerateButton();
+        }, 300);
+      }
+    }
+    
+    // 図解タイプ選択
+    function showDiagramTypeSelection() {
+      addMessage('ai', 'どのような図解を作成しますか？');
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">図解タイプを選択</label>
+          <div class="selection-options">
+            <button class="selection-option" onclick="selectDiagramType('graph')">📊 グラフ</button>
+            <button class="selection-option" onclick="selectDiagramType('gantt')">📅 ガントチャート</button>
+            <button class="selection-option" onclick="selectDiagramType('svg')">🎨 SVG図解</button>
+            <button class="selection-option" onclick="selectDiagramType('mermaid')">🔄 Mermaid</button>
+          </div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // 図解タイプ選択処理
+    function selectDiagramType(type) {
+      appState.diagramType = type;
+      
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.toLowerCase().includes(type)) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        const typeLabel = {
+          graph: 'グラフ',
+          gantt: 'ガントチャート',
+          svg: 'SVG図解',
+          mermaid: 'Mermaid'
+        }[type];
+        
+        addMessage('user', `${typeLabel}を作成します`);
+        updateStatusBar(3);
+        
+        setTimeout(() => {
+          addMessage('ai', '図解の作成方法を選択してください');
+          const selectionHTML = `
+            <div class="selection-container">
+              <label class="selection-label">作成方法</label>
+              <div class="selection-options">
+                <button class="selection-option" onclick="selectDiagramInputMethod('upload')">📤 原稿をアップロード</button>
+                <button class="selection-option" onclick="selectDiagramInputMethod('chat')">💬 AIと対話して作成</button>
+              </div>
+            </div>
+          `;
+          addMessage('ai', selectionHTML, true);
+        }, 500);
+      }, 300);
+    }
+    
+    // 図解入力方法選択
+    function selectDiagramInputMethod(method) {
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(method === 'upload' ? 'アップロード' : 'AIと対話')) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `${method === 'upload' ? '原稿をアップロード' : 'AIと対話して作成'}します`);
+        
+        setTimeout(() => {
+          if (method === 'upload') {
+            showFileUpload();
+          } else {
+            enableChat();
+          }
+        }, 500);
+      }, 300);
+    }
+    
+    // 原稿作成モード
+    function showDraftInputSelection() {
+      addMessage('ai', '原稿の作成方法を選択してください');
+      const selectionHTML = `
+        <div class="selection-container">
+          <label class="selection-label">作成方法</label>
+          <div class="selection-options">
+            <button class="selection-option" onclick="selectDraftInput('upload')">📤 たたき原稿をアップロード</button>
+            <button class="selection-option" onclick="selectDraftInput('chat')">💬 AIと対話してゼロから作成</button>
+          </div>
+        </div>
+      `;
+      addMessage('ai', selectionHTML, true);
+    }
+    
+    // 原稿入力方法選択
+    function selectDraftInput(method) {
+      const options = document.querySelectorAll('.selection-option');
+      options.forEach(opt => {
+        if (opt.textContent.includes(method === 'upload' ? 'アップロード' : 'ゼロから')) {
+          opt.classList.add('selected');
+        }
+      });
+      
+      setTimeout(() => {
+        addMessage('user', `${method === 'upload' ? 'たたき原稿をアップロード' : 'AIと対話してゼロから作成'}します`);
+        updateStatusBar(3);
+        
+        setTimeout(() => {
+          if (method === 'upload') {
+            showFileUpload();
+          } else {
+            addMessage('ai', '原稿の内容について教えてください。どのような原稿を作成しますか？');
+            enableChat();
+          }
+        }, 500);
+      }, 300);
+    }
+    
+    // チャット有効化
+    function enableChat() {
+      const chatInput = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendBtn');
+      
+      chatInput.disabled = false;
+      sendBtn.disabled = false;
+      
+      if (appState.mode !== 'draft') {
+        addMessage('ai', `${getModeLabel(appState.mode)}の内容について教えてください。どのような資料を作成しますか？`);
+      }
+      
+      // 一定文字数入力後に生成ボタンを表示
+      chatInput.addEventListener('input', () => {
+        if (chatInput.value.length > 20) {
+          showGenerateButton();
+        }
+      });
+    }
+    
+    // 送信ボタンと生成ボタンの制御
+    function showGenerateButton() {
+      const sendBtn = document.getElementById('sendBtn');
+      const generateBtn = document.getElementById('generateBtn');
+      
+      sendBtn.style.display = 'none';
+      generateBtn.style.display = 'flex';
+      generateBtn.disabled = false;
+    }
+    function showSendButton() {
+      const sendBtn = document.getElementById('sendBtn');
+      const generateBtn = document.getElementById('generateBtn');
+      
+      sendBtn.style.display = 'flex';
+      generateBtn.style.display = 'none';
+      sendBtn.disabled = false;
+    }
+    
+    // プレビュー表示制御
+    function showPreview() {
+      const previewContainer = document.getElementById('previewContainer');
+      const previewToggle = document.getElementById('previewToggle');
+      const chatPanel = document.getElementById('chatPanel');
+      previewContainer.classList.remove('hidden');
+      previewToggle.classList.add('hidden');
+      chatPanel.classList.remove('expanded');
+      appState.isPreviewVisible = true;
+      updateStatusBar(4);
+    }
+    function hidePreview() {
+      const previewContainer = document.getElementById('previewContainer');
+      const previewToggle = document.getElementById('previewToggle');
+      const chatPanel = document.getElementById('chatPanel');
+      previewContainer.classList.add('hidden');
+      previewToggle.classList.remove('hidden');
+      chatPanel.classList.add('expanded');
+      appState.isPreviewVisible = false;
+    }
+
+    // プレビュータブ切替
+    function switchPreviewTab(tab) {
+      const tabs = document.querySelectorAll('.preview-tab');
+      const previewFrame = document.getElementById('previewFrame');
+      const codeView = document.getElementById('codeView');
+      const previewPlaceholder = document.getElementById('previewPlaceholder');
+      tabs.forEach(t => {
+        if (t.textContent.includes(tab === 'preview' ? 'プレビュー' : 'HTML')) {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+      if (tab === 'preview') {
+        // プレビュープレースホルダーは成果物がなければ表示
+        if (!appState.versions.length) {
+          previewPlaceholder.style.display = 'block';
+          previewFrame.style.display = 'none';
+        } else {
+          previewPlaceholder.style.display = 'none';
+          previewFrame.style.display = 'block';
+        }
+        codeView.style.display = 'none';
+      } else {
+        previewPlaceholder.style.display = 'none';
+        previewFrame.style.display = 'none';
+        codeView.style.display = 'block';
+      }
+      appState.currentTab = tab;
+    }
+
+    // 生成処理
+   
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const generateBtn = document.getElementById('generateBtn');
+      generateBtn.disabled = true;
+      // ローディング表示
+      addMessage('ai', '<div class="loading"><div class="loading-spinner"></div></div>', true);
+      setTimeout(() => {
+        // ローディングメッセージを削除
+        const messages = document.getElementById('chatMessages');
+        messages.lastElementChild.remove();
+        addMessage('ai', '資料を生成しました！プレビューで確認できます。');
+        showPreview();
+        loadPreviewContent();
+        showSendButton();
+        updateStatusBar(4);
+        // チャット入力を有効化
+        const chatInput = document.getElementById('chatInput');
+        chatInput.disabled = false;
+        chatInput.placeholder = '修正したい内容を入力...';
+        // プレビュープレースホルダーを非表示、成果物を表示
+        document.getElementById('previewPlaceholder').style.display = 'none';
+        document.getElementById('previewFrame').style.display = 'block';
+      }, 2000);
+    });
+    
+    // プレビューコンテンツ読み込み
+    function loadPreviewContent() {
+      const previewFrame = document.getElementById('previewFrame');
+      const codeView = document.getElementById('codeView');
+      
+      let sampleHTML = '';
+      
+      // エグゼクティブサマリーのサンプル
+      if (appState.selectedTemplate === 'exec-summary') {
+        sampleHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Noto Sans JP', sans-serif;
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+              }
+              .slide {
+                background: white;
+                width: 90%;
+                max-width: 1000px;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                padding: 60px;
+              }
+              .header {
+                border-bottom: 3px solid #00A9E0;
+                padding-bottom: 20px;
+                margin-bottom: 40px;
+              }
+              h1 {
+                color: #00A9E0;
+                font-size: 36px;
+                margin: 0 0 10px 0;
+              }
+              .subtitle {
+                color: #666;
+                font-size: 18px;
+              }
+              .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                margin-top: 40px;
+              }
+              .summary-item {
+                background: #f8f9fa;
+                padding: 30px;
+                border-radius: 8px;
+                border-left: 4px solid #00B2A9;
+              }
+              .summary-item h3 {
+                color: #00B2A9;
+                margin: 0 0 15px 0;
+                font-size: 20px;
+              }
+              .summary-item p {
+                color: #333;
+                line-height: 1.8;
+                margin: 0;
+              }
+              .key-metrics {
+                background: linear-gradient(135deg, #00A9E0, #00B2A9);
+                color: white;
+                padding: 30px;
+                border-radius: 8px;
+                margin-top: 30px;
+                text-align: center;
+              }
+              .metric {
+                display: inline-block;
+                margin: 0 30px;
+              }
+              .metric-value {
+                font-size: 36px;
+                font-weight: bold;
+              }
+              .metric-label {
+                font-size: 14px;
+                opacity: 0.9;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="slide">
+              <div class="header">
+                <h1>エグゼクティブサマリー</h1>
+                <div class="subtitle">2024年度 第3四半期 ビジネスレポート</div>
+              </div>
+              
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <h3>📈 業績ハイライト</h3>
+                  <p>売上高は前年同期比15%増の120億円を達成。新規事業の立ち上げが順調に推移し、既存事業も堅調な成長を維持。</p>
+                </div>
+                <div class="summary-item">
+                  <h3>🎯 主要成果</h3>
+                  <p>新製品のローンチに成功し、市場シェアが3ポイント向上。顧客満足度も過去最高の92%を記録。</p>
+                </div>
+                <div class="summary-item">
+                  <h3>⚡ 今後の施策</h3>
+                  <p>DX推進による業務効率化を加速。AI技術を活用した新サービスの開発に着手し、来期の成長基盤を構築。</p>
+                </div>
+                <div class="summary-item">
+                  <h3>🔍 課題と対策</h3>
+                  <p>原材料費の高騰に対し、調達先の多様化とコスト構造の見直しを実施。生産性向上により影響を最小化。</p>
+                </div>
+              </div>
+              
+              <div class="key-metrics">
+                <div class="metric">
+                  <div class="metric-value">120億円</div>
+                  <div class="metric-label">売上高</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value">+15%</div>
+                  <div class="metric-label">成長率</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value">92%</div>
+                  <div class="metric-label">顧客満足度</div>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+      } 
+      // SVG図解のサンプル
+      else if (appState.diagramType === 'svg') {
+        sampleHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Noto Sans JP', sans-serif;
+                margin: 0;
+                padding: 40px;
+                background: #f5f5f5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+              }
+              .diagram-container {
+                background: white;
+                padding: 40px;
+                border-radius: 12px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+                text-align: center;
+              }
+              h2 {
+                color: #00A9E0;
+                margin-bottom: 30px;
+              }
+              svg {
+                max-width: 100%;
+                height: auto;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="diagram-container">
+              <h2>業務フロー図</h2>
+              <svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- 背景 -->
+                <rect width="800" height="400" fill="#f8f9fa" rx="8"/>
+                
+                <!-- プロセス1 -->
+                <rect x="50" y="150" width="120" height="80" rx="8" fill="#00A9E0" stroke="#0089C0" stroke-width="2"/>
+                <text x="110" y="195" text-anchor="middle" fill="white" font-size="16" font-weight="bold">開始</text>
+                
+                <!-- 矢印1 -->
+                <path d="M 170 190 L 230 190" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <!-- プロセス2 -->
+                <rect x="230" y="150" width="140" height="80" rx="8" fill="#00B2A9" stroke="#009089" stroke-width="2"/>
+                <text x="300" y="185" text-anchor="middle" fill="white" font-size="16" font-weight="bold">データ収集</text>
+                <text x="300" y="205" text-anchor="middle" fill="white" font-size="14">自動処理</text>
+                
+                <!-- 矢印2 -->
+                <path d="M 370 190 L 430 190" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <!-- 判断 -->
+                <path d="M 500 150 L 570 190 L 500 230 L 430 190 Z" fill="#DA1884" stroke="#BA0664" stroke-width="2"/>
+                <text x="500" y="195" text-anchor="middle" fill="white" font-size="16" font-weight="bold">判定</text>
+                
+                <!-- 矢印3（YES） -->
+                <path d="M 570 190 L 630 190" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="600" y="180" text-anchor="middle" font-size="14" fill="#333">YES</text>
+                
+                <!-- 矢印4（NO） -->
+                <path d="M 500 230 L 500 300 L 300 300 L 300 230" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="500" y="270" text-anchor="middle" font-size="14" fill="#333">NO</text>
+                
+                <!-- プロセス3 -->
+                <rect x="630" y="150" width="120" height="80" rx="8" fill="#52C41A" stroke="#3FA00A" stroke-width="2"/>
+                <text x="690" y="195" text-anchor="middle" fill="white" font-size="16" font-weight="bold">完了</text>
+                
+                <!-- 矢印の先端定義 -->
+                <defs>
+                  <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                  </marker>
+                </defs>
+                
+                <!-- 凡例 -->
+                <g transform="translate(50, 50)">
+                  <rect x="0" y="0" width="150" height="80" rx="4" fill="white" stroke="#ddd" stroke-width="1"/>
+                  <text x="10" y="20" font-size="14" font-weight="bold" fill="#333">凡例</text>
+                  <rect x="10" y="30" width="20" height="15" rx="2" fill="#00A9E0"/>
+                  <text x="35" y="42" font-size="12" fill="#666">プロセス</text>
+                  <rect x="10" y="50" width="20" height="15" rx="2" fill="#DA1884"/>
+                  <text x="35" y="62" font-size="12" fill="#666">判断</text>
+                </g>
+              </svg>
+            </div>
+          </body>
+          </html>
+        `;
+      }
+      // デフォルトのサンプル
+      else {
+        sampleHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body {
+                font-family: 'Noto Sans JP', sans-serif;
+                margin: 0;
+                padding: 40px;
+                background: #f5f5f5;
+              }
+              .slide {
+                background: white;
+                border-radius: 8px;
+                padding: 40px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                max-width: 800px;
+                margin: 0 auto;
+              }
+              h1 {
+                color: #00A9E0;
+                margin-bottom: 24px;
+              }
+              .content {
+                line-height: 1.8;
+                color: #333;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="slide">
+              <h1>自動生成されたスライド</h1>
+              <div class="content">
+                <p>これは自動生成されたスライドのサンプルです。</p>
+                <p>AIが入力内容に基づいて最適な資料を作成しました。</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+      }
+      
+      // プレビューに表示
+      previewFrame.srcdoc = sampleHTML;
+      codeView.textContent = sampleHTML;
+      
+      // バージョン管理
+      appState.versions.push({
+        id: `v${appState.versions.length + 1}`,
+        content: sampleHTML,
+        timestamp: new Date()
+      });
+      
+      updateVersionSelector();
+      // プレビュープレースホルダーを非表示
+      document.getElementById('previewPlaceholder').style.display = 'none';
+      previewFrame.style.display = 'block';
+    }
+    
+    // バージョンセレクター更新
+    function updateVersionSelector() {
+      const versionSelect = document.getElementById('versionSelect');
+      versionSelect.innerHTML = appState.versions.map((v, index) => 
+        `<option value="${v.id}">${v.id} ${index === appState.versions.length - 1 ? '(最新)' : ''}</option>`
+      ).join('');
+    }
+    
+    // ヘルパー関数
+    function getModeLabel(mode) {
+      const labels = {
+        slide: 'スライド',
+        report: 'レポート',
+        diagram: '図解生成',
+        draft: '原稿作成'
+      };
+      return labels[mode] || mode;
+    }
+    
+    function getInputMethodLabel(method) {
+      const labels = {
+        template: 'テンプレートから',
+        upload: '原稿アップロード',
+        chat: 'AIと対話して作成'
+      };
+      return labels[method] || method;
+    }
+    
+    // チャット入力の自動リサイズ
+    const chatInput = document.getElementById('chatInput');
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    
+    // 送信処理
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (message) {
+        addMessage('user', message);
+        input.value = '';
+        input.style.height = 'auto';
+        
+        // AI応答（シミュレーション）
+        setTimeout(() => {
+          addMessage('ai', 'ご要望を承りました。資料に反映させていただきます。');
+          
+          // 生成ボタンが表示されていない場合は表示
+          if (document.getElementById('generateBtn').style.display === 'none' && 
+              document.getElementById('generateBtn').disabled) {
+            showGenerateButton();
+          }
+        }, 1000);
+      }
+    });
+    
+    // Enterキーで送信
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('sendBtn').click();
+      }
+    });
+    
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 初期メッセージの後にモード選択を表示
+      setTimeout(() => {
+        showModeSelection();
+      }, 500);
+      // プレビュープレースホルダー初期表示
+      document.getElementById('previewPlaceholder').style.display = 'block';
+      document.getElementById('previewFrame').style.display = 'none';
+      // プレビューボタンは最初から表示
+      document.getElementById('previewToggle').classList.remove('hidden');
+    });
+    
+    // グローバルにリサイズ機能を追加
+    (function() {
+      const chatPanel = document.getElementById('chatPanel');
+      const previewContainer = document.getElementById('previewContainer');
+      const resizeBar = document.getElementById('resizeBar');
+      const mainArea = document.getElementById('mainArea');
+      let isDragging = false;
+      let startX = 0;
+      let startRatio = 0;
+
+      function updateResizeBarVisibility() {
+        if (!previewContainer.classList.contains('hidden')) {
+          resizeBar.classList.add('visible');
+        } else {
+          resizeBar.classList.remove('visible');
+        }
+      }
+
+      function setPanelRatios(chatRatio) {
+        // chatRatio: 0.0～1.0
+        chatRatio = Math.max(0.2, Math.min(chatRatio, 0.8));
+        const previewRatio = 1 - chatRatio;
+        chatPanel.style.flexBasis = (chatRatio * 100) + '%';
+        previewContainer.style.flexBasis = (previewRatio * 100) + '%';
+        chatPanel.style.flexGrow = '1';
+        previewContainer.style.flexGrow = '1';
+        chatPanel.style.flexShrink = '1';
+        previewContainer.style.flexShrink = '1';
+      }
+
+      function onResizeBarMouseDown(e) {
+        if (previewContainer.classList.contains('hidden')) return;
+        isDragging = true;
+        resizeBar.classList.add('dragging');
+        startX = e.clientX;
+        // 現在の比率を計算
+        const mainAreaRect = mainArea.getBoundingClientRect();
+        const chatWidth = chatPanel.getBoundingClientRect().width;
+        startRatio = chatWidth / mainAreaRect.width;
+        document.body.style.cursor = 'ew-resize';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      }
+
+      function onMouseMove(e) {
+        if (!isDragging) return;
+        const mainAreaRect = mainArea.getBoundingClientRect();
+        let delta = e.clientX - startX;
+        let chatWidth = mainAreaRect.width * startRatio + delta;
+        let chatRatio = chatWidth / mainAreaRect.width;
+        setPanelRatios(chatRatio);
+      }
+
+      function onMouseUp() {
+        isDragging = false;
+        resizeBar.classList.remove('dragging');
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      resizeBar.addEventListener('mousedown', onResizeBarMouseDown);
+
+      // プレビュー表示/非表示時にリサイズバーの表示を切り替え
+      const origShowPreview = window.showPreview;
+      window.showPreview = function() {
+        origShowPreview();
+        updateResizeBarVisibility();
+        // チャットパネルを最小幅、残りをプレビューに
+        const mainAreaRect = mainArea.getBoundingClientRect();
+        const minChat = 240;
+        let chatRatio = minChat / mainAreaRect.width;
+        chatRatio = Math.max(0.2, Math.min(chatRatio, 0.8));
+        setPanelRatios(chatRatio);
+      };
+      const origHidePreview = window.hidePreview;
+      window.hidePreview = function() {
+        origHidePreview();
+        updateResizeBarVisibility();
+        chatPanel.style.flexBasis = '100%';
+        previewContainer.style.flexBasis = '100%';
+      };
+
+      document.addEventListener('DOMContentLoaded', updateResizeBarVisibility);
+      window.addEventListener('resize', function() {
+        if (!previewContainer.classList.contains('hidden')) {
+          const mainAreaRect = mainArea.getBoundingClientRect();
+          const chatWidth = chatPanel.getBoundingClientRect().width;
+          let chatRatio = chatWidth / mainAreaRect.width;
+          setPanelRatios(chatRatio);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

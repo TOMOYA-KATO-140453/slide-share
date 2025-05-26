@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SlideGenius - テンプレート管理</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    
+    :root {
+      --primary-color: #00A9E0;
+      --secondary-color: #00B2A9;
+      --accent-color: #DA1884;
+      --background-color: #F8FAFB;
+      --card-background: #FFFFFF;
+      --border-color: #E8ECEF;
+      --text-primary: #1A1F36;
+      --text-secondary: #5A6376;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 260px;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--background-color);
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* アニメーション定義 */
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* ルートコンテナ */
+    .app-root {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      background: var(--background-color);
+    }
+    
+    /* オーバーレイ */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-base);
+      z-index: 40;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* サイドバー */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--card-background);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .sidebar-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .sidebar-close:hover {
+      background: var(--background-color);
+    }
+    
+    .nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-base);
+      position: relative;
+      text-decoration: none;
+    }
+    
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-item:hover {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .nav-item.active {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.08);
+      font-weight: 600;
+    }
+    
+    .nav-item.active::before {
+      transform: scaleX(1);
+    }
+    
+    .nav-icon {
+      font-size: 20px;
+    }
+    
+    .user-info {
+      padding: 24px;
+      border-top: 1px solid var(--border-color);
+      background: var(--background-color);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .user-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* メインコンテンツ */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--background-color);
+      position: relative;
+      width: 100%;
+    }
+    
+    /* ヘッダー */
+    .header {
+      background: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .menu-toggle {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .menu-toggle:hover {
+      background: var(--background-color);
+    }
+    
+    .menu-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--background-color);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* テンプレート管理コンテンツ */
+    .template-container {
+      display: flex;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+    
+    /* 左サイドバー（フィルター） */
+    .filter-sidebar {
+      width: 280px;
+      background: var(--card-background);
+      border-right: 1px solid var(--border-color);
+      padding: 24px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    
+    .filter-section {
+      margin-bottom: 32px;
+    }
+    
+    .filter-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* 検索ボックス */
+    .search-box {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 14px;
+      transition: var(--transition-base);
+      outline: none;
+    }
+    
+    .search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 169, 224, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    
+    /* モードフィルター */
+    .mode-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .mode-filter {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--background-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      gap: 12px;
+    }
+    
+    .mode-filter:hover {
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .mode-filter.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .mode-filter input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .mode-filter-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .mode-filter-count {
+      font-size: 12px;
+      padding: 2px 8px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+    }
+    
+    .mode-filter.active .mode-filter-count {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* タグフィルター */
+    .tag-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .tag-filter {
+      padding: 6px 12px;
+      background: var(--background-color);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .tag-filter:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .tag-filter.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+    
+    /* メインコンテンツエリア */
+    .template-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    /* コンテンツヘッダー */
+    .content-header {
+      padding: 24px 32px;
+      background: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .content-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .content-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    /* ソート・表示切替 */
+    .view-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .sort-select {
+      padding: 8px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      outline: none;
+    }
+    
+    .sort-select:focus {
+      border-color: var(--primary-color);
+    }
+    
+    .view-modes {
+      display: flex;
+      gap: 4px;
+      background: var(--background-color);
+      padding: 4px;
+      border-radius: 8px;
+    }
+    
+    .view-mode {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: var(--transition-base);
+    }
+    
+    .view-mode:hover {
+      background: rgba(0, 169, 224, 0.1);
+    }
+    
+    .view-mode.active {
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* テンプレートグリッド */
+    .template-grid {
+      flex: 1;
+      padding: 24px 32px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    
+    /* テンプレートカード */
+    .template-card {
+      background: var(--card-background);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      transition: var(--transition-base);
+      cursor: pointer;
+      animation: scaleIn 0.3s ease-out;
+      position: relative;
+    }
+    
+    .template-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .template-card-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .template-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .template-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+    }
+    
+    .template-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .template-mode {
+      padding: 4px 8px;
+      background: rgba(0, 169, 224, 0.1);
+      color: var(--primary-color);
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    /* テンプレートプレビュー */
+    .template-preview {
+      padding: 20px;
+      height: 200px;
+      background: var(--background-color);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .template-preview::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--background-color));
+    }
+    
+    /* テンプレートアクション */
+    .template-actions {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .action-btn {
+      padding: 8px 16px;
+      border: none;
+      background: var(--background-color);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .action-btn:hover {
+      background: rgba(0, 169, 224, 0.1);
+      color: var(--primary-color);
+    }
+    
+    .like-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      background: var(--background-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .like-btn:hover {
+      background: rgba(218, 24, 132, 0.1);
+    }
+    
+    .like-btn.liked {
+      background: var(--accent-color);
+      color: white;
+    }
+    
+    .like-count {
+      font-weight: 600;
+    }
+    
+    /* 新規テンプレートバッジ */
+    .new-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 4px 12px;
+      background: var(--accent-color);
+      color: white;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    /* 人気バッジ */
+    .popular-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 4px 12px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: white;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    /* 詳細モーダル */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-base);
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: var(--card-background);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: var(--background-color);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+    
+    .modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+    
+    .template-detail {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 32px;
+    }
+    
+    .template-content {
+      background: var(--background-color);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+    }
+    
+    .copy-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 8px 16px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: var(--transition-base);
+    }
+    
+    .copy-btn:hover {
+      background: var(--secondary-color);
+    }
+    
+    .copy-btn.copied {
+      background: var(--secondary-color);
+    }
+    
+    .template-info {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .info-section {
+      background: var(--background-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .info-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    
+    .info-label {
+      color: var(--text-secondary);
+    }
+    
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .tag {
+      padding: 4px 12px;
+      background: rgba(0, 169, 224, 0.1);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    /* 空の状態 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      color: var(--text-secondary);
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .empty-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .empty-desc {
+      font-size: 14px;
+    }
+    
+    /* レスポンシブ */
+    @media (max-width: 1024px) {
+      .filter-sidebar {
+        position: fixed;
+        left: -280px;
+        top: 64px;
+        bottom: 0;
+        z-index: 35;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .filter-sidebar.active {
+        left: 0;
+      }
+      
+      .template-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+      
+      .template-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .view-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .template-grid {
+        padding: 16px;
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-root">
+    <!-- オーバーレイ -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">SlideGenius</div>
+        <button class="sidebar-close" onclick="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="nav">
+        <a class="nav-item" href="index.html">
+          <span class="nav-icon">🏠</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a class="nav-item" href="createSlide.html">
+          <span class="nav-icon">➕</span>
+          <span>新規作成</span>
+        </a>
+        <a class="nav-item active" href="#">
+          <span class="nav-icon">📋</span>
+          <span>テンプレート管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">🕐</span>
+          <span>履歴管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚙️</span>
+          <span>設定</span>
+        </a>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">山</div>
+        <div class="user-name">山田 太郎</div>
+        <div class="user-email">yamada@example.com</div>
+      </div>
+    </nav>
+    
+    <!-- メインコンテンツ -->
+    <div class="main-content">
+      <!-- ヘッダー -->
+      <header class="header">
+        <div class="header-left">
+          <button class="menu-toggle" onclick="toggleSidebar()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="header-logo">
+            <img src="logo_slideapp.svg" alt="SlideGenius">
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <span>📤</span>
+            <span>インポート</span>
+          </button>
+          <button class="btn btn-primary" onclick="location.href='createSlide.html'">
+            <span>➕</span>
+            <span>新規作成</span>
+          </button>
+        </div>
+      </header>
+      
+      <!-- テンプレート管理コンテンツ -->
+      <div class="template-container">
+        <!-- フィルターサイドバー -->
+        <div class="filter-sidebar" id="filterSidebar">
+          <!-- 検索 -->
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="テンプレートを検索..." id="searchInput">
+          </div>
+          
+          <!-- モードフィルター -->
+          <div class="filter-section">
+            <h3 class="filter-title">
+              <span>📁</span>
+              モード別
+            </h3>
+            <div class="mode-filters">
+              <label class="mode-filter">
+                <input type="checkbox" checked>
+                <span class="mode-filter-label">スライド</span>
+                <span class="mode-filter-count">18</span>
+              </label>
+              <label class="mode-filter">
+                <input type="checkbox" checked>
+                <span class="mode-filter-label">レポート</span>
+                <span class="mode-filter-count">12</span>
+              </label>
+              <label class="mode-filter">
+                <input type="checkbox" checked>
+                <span class="mode-filter-label">図解</span>
+                <span class="mode-filter-count">8</span>
+              </label>
+              <label class="mode-filter">
+                <input type="checkbox" checked>
+                <span class="mode-filter-label">原稿</span>
+                <span class="mode-filter-count">6</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- タグフィルター -->
+          <div class="filter-section">
+            <h3 class="filter-title">
+              <span>🏷️</span>
+              人気のタグ
+            </h3>
+            <div class="tag-filters">
+              <button class="tag-filter active">すべて</button>
+              <button class="tag-filter">ビジネス</button>
+              <button class="tag-filter">技術</button>
+              <button class="tag-filter">教育</button>
+              <button class="tag-filter">マーケティング</button>
+              <button class="tag-filter">研究</button>
+              <button class="tag-filter">デザイン</button>
+            </div>
+          </div>
+          
+          <!-- その他のフィルター -->
+          <div class="filter-section">
+            <h3 class="filter-title">
+              <span>⚙️</span>
+              その他の条件
+            </h3>
+            <div class="mode-filters">
+              <label class="mode-filter">
+                <input type="checkbox">
+                <span class="mode-filter-label">お気に入りのみ</span>
+              </label>
+              <label class="mode-filter">
+                <input type="checkbox">
+                <span class="mode-filter-label">自分が作成</span>
+              </label>
+              <label class="mode-filter">
+                <input type="checkbox">
+                <span class="mode-filter-label">最近追加</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- メインコンテンツエリア -->
+        <div class="template-main">
+          <!-- コンテンツヘッダー -->
+          <div class="content-header">
+            <div>
+              <h1 class="content-title">テンプレート管理</h1>
+              <p class="content-subtitle">全44件のテンプレート</p>
+            </div>
+            <div class="view-controls">
+              <select class="sort-select">
+                <option>人気順</option>
+                <option>新着順</option>
+                <option>名前順</option>
+                <option>使用回数順</option>
+              </select>
+              <div class="view-modes">
+                <button class="view-mode active" title="グリッド表示">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <rect x="2" y="2" width="6" height="6" rx="1"/>
+                    <rect x="12" y="2" width="6" height="6" rx="1"/>
+                    <rect x="2" y="12" width="6" height="6" rx="1"/>
+                    <rect x="12" y="12" width="6" height="6" rx="1"/>
+                  </svg>
+                </button>
+                <button class="view-mode" title="リスト表示">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <rect x="2" y="3" width="16" height="2" rx="1"/>
+                    <rect x="2" y="9" width="16" height="2" rx="1"/>
+                    <rect x="2" y="15" width="16" height="2" rx="1"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- テンプレートグリッド -->
+          <div class="template-grid" id="templateGrid">
+            <!-- テンプレートカード1 -->
+            <div class="template-card" onclick="openModal('exec-summary')">
+              <div class="popular-badge">
+                <span>👑</span>
+                <span>人気No.1</span>
+              </div>
+              <div class="template-card-header">
+                <div class="template-card-title">
+                  <div class="template-icon">👔</div>
+                  <span>エグゼクティブサマリー</span>
+                </div>
+                <div class="template-card-meta">
+                  <span class="template-mode">スライド・1枚</span>
+                  <span>使用: 156回</span>
+                </div>
+              </div>
+              <div class="template-preview">
+# エグゼクティブサマリー
+
+## 概要
+- 重要ポイント1
+- 重要ポイント2
+- 重要ポイント3
+
+## 主要指標
+| 指標 | 数値 | 前年比 |
+|------|------|--------|
+| 売上 | ¥XXX | +XX% |
+| 利益 | ¥XXX | +XX% |
+
+## 今後の展望
+...
+              </div>
+              <div class="template-actions">
+                <div class="action-buttons">
+                  <button class="action-btn" onclick="event.stopPropagation(); previewTemplate('exec-summary')">
+                    <span>👁️</span>
+                    <span>プレビュー</span>
+                  </button>
+                  <button class="action-btn" onclick="event.stopPropagation(); copyTemplate('exec-summary')">
+                    <span>📋</span>
+                    <span>コピー</span>
+                  </button>
+                </div>
+                <button class="like-btn" onclick="event.stopPropagation(); toggleLike(this)">
+                  <span>❤️</span>
+                  <span class="like-count">42</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- テンプレートカード2 -->
+            <div class="template-card" onclick="openModal('project-report')">
+              <div class="new-badge">NEW</div>
+              <div class="template-card-header">
+                <div class="template-card-title">
+                  <div class="template-icon">📋</div>
+                  <span>プロジェクト報告書</span>
+                </div>
+                <div class="template-card-meta">
+                  <span class="template-mode">レポート</span>
+                  <span>使用: 89回</span>
+                </div>
+              </div>
+              <div class="template-preview">
+# プロジェクト報告書
+
+## 1. プロジェクト概要
+### 1.1 背景
+### 1.2 目的
+
+## 2. 進捗状況
+### 2.1 完了タスク
+### 2.2 進行中タスク
+
+## 3. 課題と対策
+...
+              </div>
+              <div class="template-actions">
+                <div class="action-buttons">
+                  <button class="action-btn" onclick="event.stopPropagation(); previewTemplate('project-report')">
+                    <span>👁️</span>
+                    <span>プレビュー</span>
+                  </button>
+                  <button class="action-btn" onclick="event.stopPropagation(); copyTemplate('project-report')">
+                    <span>📋</span>
+                    <span>コピー</span>
+                  </button>
+                </div>
+                <button class="like-btn liked" onclick="event.stopPropagation(); toggleLike(this)">
+                  <span>❤️</span>
+                  <span class="like-count">28</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- テンプレートカード3 -->
+            <div class="template-card" onclick="openModal('flowchart')">
+              <div class="template-card-header">
+                <div class="template-card-title">
+                  <div class="template-icon">🔄</div>
+                  <span>業務フローチャート</span>
+                </div>
+                <div class="template-card-meta">
+                  <span class="template-mode">図解・Mermaid</span>
+                  <span>使用: 67回</span>
+                </div>
+              </div>
+              <div class="template-preview">
+```mermaid
+flowchart TD
+    A[開始] --> B{判定}
+    B -->|Yes| C[処理1]
+    B -->|No| D[処理2]
+    C --> E[終了]
+    D --> E
+```
+              </div>
+              <div class="template-actions">
+                <div class="action-buttons">
+                  <button class="action-btn" onclick="event.stopPropagation(); previewTemplate('flowchart')">
+                    <span>👁️</span>
+                    <span>プレビュー</span>
+                  </button>
+                  <button class="action-btn" onclick="event.stopPropagation(); copyTemplate('flowchart')">
+                    <span>📋</span>
+                    <span>コピー</span>
+                  </button>
+                </div>
+                <button class="like-btn" onclick="event.stopPropagation(); toggleLike(this)">
+                  <span>❤️</span>
+                  <span class="like-count">15</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- さらにテンプレートカードを追加... -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 詳細モーダル -->
+    <div class="modal" id="templateModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="template-icon">👔</div>
+            <span id="modalTitle">エグゼクティブサマリー</span>
+          </div>
+          <button class="modal-close" onclick="closeModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="template-detail">
+            <div class="template-content">
+              <button class="copy-btn" id="copyBtn" onclick="copyTemplateContent()">
+                📋 コピー
+              </button>
+              <pre id="templateContent">
+# エグゼクティブサマリー
+
+## 概要
+- 重要ポイント1：ここに主要な成果や発見を記載
+- 重要ポイント2：影響や意味を簡潔に説明
+- 重要ポイント3：今後の方向性や推奨事項
+
+## 主要指標
+| 指標 | 数値 | 前年比 | 目標達成率 |
+|------|------|--------|------------|
+| 売上高 | ¥XXX億円 | +XX% | XX% |
+| 営業利益 | ¥XXX億円 | +XX% | XX% |
+| 純利益 | ¥XXX億円 | +XX% | XX% |
+
+## ビジネスハイライト
+### 成果
+- 新規事業の立ち上げに成功
+- 市場シェアがXX%向上
+- 顧客満足度がXX%改善
+
+### 課題
+- 原材料コストの上昇
+- 競合他社の参入
+- 人材確保の困難
+
+## 今後の展望
+1. **短期（3ヶ月）**
+   - 施策1の実行
+   - 施策2の準備
+
+2. **中期（1年）**
+   - 新市場への参入
+   - 製品ラインの拡充
+
+3. **長期（3年）**
+   - グローバル展開
+   - 新技術の開発
+
+## 推奨事項
+- 投資の優先順位
+- リソース配分の最適化
+- リスク管理の強化
+              </pre>
+            </div>
+            <div class="template-info">
+              <div class="info-section">
+                <h3 class="info-title">テンプレート情報</h3>
+                <div class="info-item">
+                  <span class="info-label">カテゴリ</span>
+                  <span class="info-value">スライド・1枚</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">作成者</span>
+                  <span class="info-value">田中 一郎</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">作成日</span>
+                  <span class="info-value">2024/03/15</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">更新日</span>
+                  <span class="info-value">2024/06/01</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">使用回数</span>
+                  <span class="info-value">156回</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">いいね数</span>
+                  <span class="info-value">42</span>
+                </div>
+              </div>
+              
+              <div class="info-section">
+                <h3 class="info-title">タグ</h3>
+                <div class="tags">
+                  <span class="tag">ビジネス</span>
+                  <span class="tag">経営</span>
+                  <span class="tag">報告書</span>
+                  <span class="tag">要約</span>
+                </div>
+              </div>
+              
+              <div class="info-section">
+                <h3 class="info-title">使用方法</h3>
+                <p style="font-size: 14px; line-height: 1.6; color: var(--text-secondary);">
+                  このテンプレートは経営層向けの要約資料作成に最適です。
+                  重要な指標と今後の展望を1枚にまとめることができます。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // サイドバー制御
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+    
+    // オーバーレイクリックでサイドバーを閉じる
+    document.getElementById('overlay').addEventListener('click', () => {
+      toggleSidebar();
+    });
+    
+    // いいね機能
+    function toggleLike(button) {
+      button.classList.toggle('liked');
+      const count = button.querySelector('.like-count');
+      const currentCount = parseInt(count.textContent);
+      if (button.classList.contains('liked')) {
+        count.textContent = currentCount + 1;
+      } else {
+        count.textContent = currentCount - 1;
+      }
+    }
+    
+    // モーダル制御
+    function openModal(templateId) {
+      const modal = document.getElementById('templateModal');
+      modal.classList.add('active');
+      // 実際の実装では、templateIdに基づいてコンテンツを動的に読み込む
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('templateModal');
+      modal.classList.remove('active');
+    }
+    
+    // モーダル外クリックで閉じる
+    document.getElementById('templateModal').addEventListener('click', (e) => {
+      if (e.target.id === 'templateModal') {
+        closeModal();
+      }
+    });
+    
+    // テンプレートコピー機能
+    function copyTemplateContent() {
+      const content = document.getElementById('templateContent').textContent;
+      navigator.clipboard.writeText(content).then(() => {
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.textContent = '✅ コピー完了';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = '📋 コピー';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+    
+    function copyTemplate(templateId) {
+      // 実際の実装では、templateIdに基づいてコンテンツを取得
+      const templateContent = `# テンプレート内容\n\nこれはサンプルです。`;
+      navigator.clipboard.writeText(templateContent).then(() => {
+        // 成功通知を表示（実装は省略）
+        console.log('Template copied!');
+      });
+    }
+    
+    // プレビュー機能（実際の実装では別ウィンドウやモーダルで表示）
+    function previewTemplate(templateId) {
+      console.log('Preview template:', templateId);
+      // 実装は省略
+    }
+    
+    // 検索機能
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      const cards = document.querySelectorAll('.template-card');
+      
+      cards.forEach(card => {
+        const title = card.querySelector('.template-card-title').textContent.toLowerCase();
+        const preview = card.querySelector('.template-preview').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || preview.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+    
+    // フィルター機能
+    const modeFilters = document.querySelectorAll('.mode-filter input[type="checkbox"]');
+    modeFilters.forEach(filter => {
+      filter.addEventListener('change', updateFilters);
+    });
+    
+    function updateFilters() {
+      // 実装は省略（選択されたフィルターに基づいてカードを表示/非表示）
+      console.log('Filters updated');
+    }
+    
+    // タグフィルター
+    const tagFilters = document.querySelectorAll('.tag-filter');
+    tagFilters.forEach(tag => {
+      tag.addEventListener('click', () => {
+        // 現在のアクティブタグを解除
+        document.querySelector('.tag-filter.active').classList.remove('active');
+        // 新しいタグをアクティブに
+        tag.classList.add('active');
+        // フィルター処理（実装は省略）
+      });
+    });
+    
+    // ビューモード切替
+    const viewModes = document.querySelectorAll('.view-mode');
+    viewModes.forEach(mode => {
+      mode.addEventListener('click', () => {
+        document.querySelector('.view-mode.active').classList.remove('active');
+        mode.classList.add('active');
+        // ビュー切替処理（実装は省略）
+      });
+    });
+    
+    // ESCキーでモーダルを閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

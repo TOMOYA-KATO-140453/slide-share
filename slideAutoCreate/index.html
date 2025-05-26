@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SlideGenius - ダッシュボード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    
+    :root {
+      --primary-color: #00A9E0;
+      --secondary-color: #00B2A9;
+      --accent-color: #DA1884;
+      --background-color: #F8FAFB;
+      --card-background: #FFFFFF;
+      --border-color: #E8ECEF;
+      --text-primary: #1A1F36;
+      --text-secondary: #5A6376;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 260px;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--background-color);
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* アニメーション定義 */
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* ルートコンテナ */
+    .app-root {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      background: var(--background-color);
+    }
+    
+    /* オーバーレイ */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-base);
+      z-index: 40;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* サイドバー */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--card-background);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .sidebar-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .sidebar-close:hover {
+      background: var(--background-color);
+    }
+    
+    .nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-base);
+      position: relative;
+      text-decoration: none;
+    }
+    
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-item:hover {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.05);
+    }
+    
+    .nav-item.active {
+      color: var(--primary-color);
+      background: rgba(0, 169, 224, 0.08);
+      font-weight: 600;
+    }
+    
+    .nav-item.active::before {
+      transform: scaleX(1);
+    }
+    
+    .nav-icon {
+      font-size: 20px;
+    }
+    
+    .user-info {
+      padding: 24px;
+      border-top: 1px solid var(--border-color);
+      background: var(--background-color);
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .user-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* メインコンテンツ */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--background-color);
+      position: relative;
+      width: 100%;
+    }
+    
+    /* ヘッダー */
+    .header {
+      background: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .menu-toggle {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: var(--transition-base);
+    }
+    
+    .menu-toggle:hover {
+      background: var(--background-color);
+    }
+    
+    .menu-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 169, 224, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 169, 224, 0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--background-color);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* ダッシュボードコンテンツ */
+    .dashboard-content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    
+    .dashboard-header {
+      margin-bottom: 32px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .dashboard-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .dashboard-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+    
+    /* 統計カード */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .stat-card {
+      background: var(--card-background);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition-base);
+      animation: fadeIn 0.5s ease-out backwards;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      margin-bottom: 16px;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .stat-trend {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+    
+    /* セクション */
+    .dashboard-section {
+      background: var(--card-background);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+      animation: fadeIn 0.5s ease-out backwards;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .section-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+    }
+    
+    .section-action {
+      font-size: 14px;
+      color: var(--primary-color);
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .section-action:hover {
+      color: var(--secondary-color);
+    }
+    
+    /* リストアイテム */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--background-color);
+      border-radius: 8px;
+      transition: var(--transition-base);
+      cursor: pointer;
+    }
+    
+    .list-item:hover {
+      background: rgba(0, 169, 224, 0.05);
+      transform: translateX(4px);
+    }
+    
+    .list-item-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .list-item-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      opacity: 0.9;
+    }
+    
+    .list-item-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .list-item-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .list-item-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .list-item-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* クイックアクション */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .action-card {
+      background: var(--background-color);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      text-decoration: none;
+    }
+    
+    .action-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      margin: 0 auto 12px;
+    }
+    
+    .action-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .action-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* レスポンシブ */
+    @media (max-width: 768px) {
+      .dashboard-content {
+        padding: 16px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .dashboard-title {
+        font-size: 24px;
+      }
+      
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-root">
+    <!-- オーバーレイ -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">SlideGenius</div>
+        <button class="sidebar-close" onclick="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="nav">
+        <a class="nav-item" href="index.html">
+          <span class="nav-icon">🏠</span>
+          <span>ダッシュボード</span>
+        </a>
+        <a class="nav-item" href="createSlide.html">
+          <span class="nav-icon">➕</span>
+          <span>新規作成</span>
+        </a>
+        <a class="nav-item" href="template.html">
+          <span class="nav-icon">📋</span>
+          <span>テンプレート管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">🕑</span>
+          <span>履歴管理</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">⚙️</span>
+          <span>設定</span>
+        </a>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">山</div>
+        <div class="user-name">山田 太郎</div>
+        <div class="user-email">yamada@example.com</div>
+      </div>
+    </nav>
+    
+    <!-- メインコンテンツ -->
+    <div class="main-content">
+      <!-- ヘッダー -->
+      <header class="header">
+        <div class="header-left">
+          <button class="menu-toggle" onclick="toggleSidebar()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="header-logo">
+            <img src="logo_slideapp.svg" alt="SlideGenius">
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <span>📚</span>
+            <span>使い方</span>
+          </button>
+          <button class="btn btn-primary" onclick="location.href='createSlide.html'">
+            <span>➕</span>
+            <span>新規作成</span>
+          </button>
+        </div>
+      </header>
+      
+      <!-- ダッシュボードコンテンツ -->
+      <div class="dashboard-content">
+        <!-- ダッシュボードヘッダー -->
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">ダッシュボード</h1>
+          <p class="dashboard-subtitle">資料作成の効率化と品質向上をAIがサポート</p>
+        </div>
+        
+        <!-- 統計カード -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value">246</div>
+            <div class="stat-label">総資料数</div>
+            <div class="stat-trend">+12%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">24</div>
+            <div class="stat-label">テンプレート数</div>
+            <div class="stat-trend">+3</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">アクティブユーザー</div>
+            <div class="stat-trend">+2</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-value">58%</div>
+            <div class="stat-label">作業時間削減率</div>
+            <div class="stat-trend">+5%</div>
+          </div>
+        </div>
+        
+        <!-- 最近の生成履歴 -->
+        <div class="dashboard-section">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">🕐</div>
+              最近の生成履歴
+            </div>
+            <div class="section-action">すべて見る →</div>
+          </div>
+          <div class="item-list">
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">📊</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">2024年度 第3四半期 業績報告</div>
+                  <div class="list-item-subtitle">エグゼクティブサマリー • 1枚スライド</div>
+                </div>
+              </div>
+              <div class="list-item-meta">2時間前</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">📈</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">AI技術トレンド分析レポート</div>
+                  <div class="list-item-subtitle">技術トレンド解説 • レポート</div>
+                </div>
+              </div>
+              <div class="list-item-meta">昨日</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">🔄</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">プロジェクト進捗フローチャート</div>
+                  <div class="list-item-subtitle">Mermaid記法 • 図解</div>
+                </div>
+              </div>
+              <div class="list-item-meta">3日前</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- よく使うテンプレート -->
+        <div class="dashboard-section">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">⭐</div>
+              よく使うテンプレート
+            </div>
+            <div class="section-action">すべて見る →</div>
+          </div>
+          <div class="item-list">
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">👔</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">エグゼクティブサマリー</div>
+                  <div class="list-item-subtitle">経営層向け要約資料 • 使用回数: 45</div>
+                </div>
+              </div>
+              <div class="list-item-meta">人気No.1</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">📋</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">プロジェクト報告書</div>
+                  <div class="list-item-subtitle">進捗・成果報告用 • 使用回数: 32</div>
+                </div>
+              </div>
+              <div class="list-item-meta">人気No.2</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon">🔬</div>
+                <div class="list-item-content">
+                  <div class="list-item-title">実験レポート</div>
+                  <div class="list-item-subtitle">研究開発部門向け • 使用回数: 28</div>
+                </div>
+              </div>
+              <div class="list-item-meta">人気No.3</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- クイックアクション -->
+        <div class="dashboard-section">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">⚡</div>
+              クイックアクション
+            </div>
+          </div>
+          <div class="quick-actions">
+            <a href="createSlide.html" class="action-card">
+              <div class="action-icon">📊</div>
+              <div class="action-title">スライド作成</div>
+              <div class="action-desc">1枚・複数枚対応</div>
+            </a>
+            <a href="createSlide.html" class="action-card">
+              <div class="action-icon">📄</div>
+              <div class="action-title">レポート作成</div>
+              <div class="action-desc">分析・調査報告書</div>
+            </a>
+            <a href="createSlide.html" class="action-card">
+              <div class="action-icon">📈</div>
+              <div class="action-title">図解生成</div>
+              <div class="action-desc">グラフ・チャート</div>
+            </a>
+            <a href="createSlide.html" class="action-card">
+              <div class="action-icon">✍️</div>
+              <div class="action-title">原稿作成</div>
+              <div class="action-desc">AIアシスト執筆</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // サイドバー制御
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+    
+    // オーバーレイクリックでサイドバーを閉じる
+    document.getElementById('overlay').addEventListener('click', () => {
+      toggleSidebar();
+    });
+    
+    // 統計カードのアニメーション
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    // アニメーション対象要素を監視
+    document.querySelectorAll('.stat-card, .dashboard-section').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      observer.observe(el);
+    });
+    
+    // リストアイテムのクリックイベント
+    document.querySelectorAll('.list-item').forEach(item => {
+      item.addEventListener('click', () => {
+        // 実際の実装では詳細画面への遷移などを行う
+        console.log('Item clicked:', item.querySelector('.list-item-title').textContent);
+      });
+    });
+  </script>
+</body>
+</html>
